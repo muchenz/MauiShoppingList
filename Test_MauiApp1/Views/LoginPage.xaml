@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Test_MauiApp1.Views.LoginPage"
+             Title="LoginPage">
+    <VerticalStackLayout>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="3 *"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+
+                <StackLayout Grid.Row="0">
+
+
+                    <StackLayout  HorizontalOptions="Center" VerticalOptions="EndAndExpand">
+
+                        <Label FontSize="Medium" TextColor="DodgerBlue" Text="{Binding LoginError}" ></Label>
+                    </StackLayout>
+                </StackLayout>
+                <StackLayout Grid.Row="1" Margin="20">
+                    <Entry FontSize="Title" x:Name="UserName" Placeholder="email login" Text="{Binding Model.UserName }"></Entry>
+                    <Entry FontSize="Title" IsPassword="True" Placeholder="password" Text="{Binding Model.Password}"></Entry>
+
+                    <Button FontSize="Title" Text="Login" Command="{Binding LoginCommand}" Margin="0,20,0,0"></Button>
+                    <Button FontSize="Small" BackgroundColor="RoyalBlue" Text="Facebook" Command="{Binding LoginFacebookCommand}" Margin="0,30,0,0"></Button>
+
+                </StackLayout>
+
+                <StackLayout Grid.Row="2" Margin="20">
+
+                    <Button FontSize="Small" Text="Create Account" WidthRequest="180" HorizontalOptions="Start" 
+                     VerticalOptions="EndAndExpand" Command="{Binding CreateAccountCommand}" ></Button>
+
+                </StackLayout>
+
+            </Grid>
+
+    </VerticalStackLayout>
+</ContentPage>

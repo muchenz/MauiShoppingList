@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converterLocal="clr-namespace:Test_MauiApp1.Converters" 
+               xmlns:renderedViews="http://sharpnado.com"
+             x:Class="Test_MauiApp1.Views.ListItemPage"
+             Title="NewPage1"
+             x:Name="ListItemPageName"
+             >
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="FrameStyle" TargetType="Frame">
+                <Setter Property="BackgroundColor" Value="Gray" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="HasShadow" Value="False" />
+                <Setter Property="Padding" Value="12" />
+                <Setter Property="Margin" Value="0, 12, 0, 0" />
+            </Style>
+        </ResourceDictionary>
+
+
+        <Style x:Key="StackLayoutStyle" TargetType="StackLayout"  >
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" >
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="LightGray" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="DarkGray" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+
+        <Style x:Key="StackLayoutStyle2" TargetType="StackLayout"  >
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" >
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="Black" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="Black" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+
+        <converterLocal:StatusToTextDecoration x:Key="StatusToTextDecoration"/>
+        <converterLocal:PermissionToColorConverter x:Key="PermissionToColorConverter"/>
+
+
+    </ContentPage.Resources>
+    <!--<NavigationPage.TitleView>
+        <StackLayout Orientation="Horizontal">
+        <Label Text="Hello World"  />
+        <Button Text="Add hub list" HorizontalOptions="Center" Command="{Binding AddListCommand}"  ></Button>
+        </StackLayout>
+    </NavigationPage.TitleView>-->
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Delete"  Command="{Binding IsVisibleDeleteLabelCommand}" />
+
+        <ToolbarItem Text="Add/Edit"  Command="{Binding AddToolbarCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackLayout  HorizontalOptions="Center" VerticalOptions="EndAndExpand" IsVisible="{Binding IsVisibleDeleteLabel}">
+
+                <Label FontSize="Medium" TextColor="DodgerBlue" Text="Click on Item to delete." ></Label>
+            </StackLayout>
+            <Frame  IsVisible="{Binding IsVisibleAddItem}" BorderColor="Bisque"  BackgroundColor="Bisque" HasShadow="True" Padding="5">
+                <Frame  BorderColor="Bisque"  BackgroundColor="White" HasShadow="True" Padding="2">
+                    <StackLayout >
+
+                        <Entry Placeholder="Enter a name of list item" Text="{Binding AddListItemModel.ListItemName}"></Entry>
+                        <Button Text="Save" HorizontalOptions="Center" Command="{Binding AddListItemCommand}"  ></Button>
+
+                    </StackLayout>
+                </Frame>
+            </Frame>
+
+
+
+
+            <CollectionView
+                    Grid.Row="1"
+                    Margin="0,30,0,0"
+                    ItemsSource="{Binding ListItems}"
+                    SelectionMode="None"
+                    >
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Padding="3" Margin="0"  Style="{StaticResource StackLayoutStyle}" >
+
+                            <StackLayout.GestureRecognizers>
+                                <DragGestureRecognizer
+                                    CanDrag="True" 
+                                    DragStartingCommand="{Binding BindingContext.ItemDraggedCommand, Source={x:Reference ListItemPageName}}"
+                                    DragStartingCommandParameter="{Binding}"/>
+                                <DropGestureRecognizer
+                                    AllowDrop="True"
+                                    DropCommand="{Binding BindingContext.ItemDroppedCommand, Source={x:Reference ListItemPageName}}"
+                                    DropCommandParameter="{Binding}" />
+                                <TapGestureRecognizer   
+                                    Command="{Binding Path=BindingContext.ItemDoubleClickedCommand,
+                                        Source={x:Reference ListItemPageName}}" CommandParameter="{Binding}"  
+                                    NumberOfTapsRequired="1"  ></TapGestureRecognizer>
+                            </StackLayout.GestureRecognizers>
+
+                            <Grid BackgroundColor="Beige" HeightRequest="40">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="100*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackLayout BackgroundColor="Beige" Padding="5,5,0,0" Grid.ColumnSpan="2" >
+                                    <BoxView  Color="{Binding Path=BindingContext.ListAggr.PermissionLevel, Source={x:Reference ListItemPageName},
+                                        Converter={StaticResource PermissionToColorConverter}}" 
+                                        HorizontalOptions="Fill" HeightRequest="30" ></BoxView>
+                                </StackLayout>
+
+
+                                <Label  Grid.Column="1" Text="{Binding NameForView}"  
+                                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                        BackgroundColor="Beige" Opacity="1" VerticalOptions="Fill"  
+                                        TextDecorations="{Binding State, Converter={StaticResource StatusToTextDecoration}}"
+                                        LineBreakMode="NoWrap" 
+                                        Style="{DynamicResource ListItemTextStyle}" 
+                                        FontSize="18" />
+                            </Grid>
+                            <!--<StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer  Command="{Binding Path=BindingContext.ItemDoubleClickedCommand,
+                                        Source={x:Reference HorizontalListView}}" CommandParameter="{Binding}"  
+                                        NumberOfTapsRequired="2"  ></TapGestureRecognizer>                                        
+        
+                                </StackLayout.GestureRecognizers>-->
+
+                        </StackLayout>
+
+
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
