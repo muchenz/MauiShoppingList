@@ -140,7 +140,7 @@ namespace Test_MauiApp1.Models
 
         public User()
         {
-            ListAggregators = new HashSet<ListAggregator>();
+            ListAggregators = new List<ListAggregator>();
 
 
         }
@@ -150,7 +150,7 @@ namespace Test_MauiApp1.Models
         // public string Password { get; set; }
 
 
-        public ICollection<ListAggregator> ListAggregators { get; set; }
+        public IList<ListAggregator> ListAggregators { get; set; }
 
 
     }
@@ -163,7 +163,7 @@ namespace Test_MauiApp1.Models
 
         public ListAggregator()
         {
-            Lists = new HashSet<List>();
+            Lists = new List<List>();
 
         }
 
@@ -186,7 +186,7 @@ namespace Test_MauiApp1.Models
 
         public int Id => ListAggregatorId;
 
-        public ICollection<List> Lists { get; set; }
+        public IList<List> Lists { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }
@@ -234,7 +234,7 @@ namespace Test_MauiApp1.Models
     {
         public List()
         {
-            ListItems = new HashSet<ListItem>();
+            ListItems = new List<ListItem>();
 
         }
         public int ListId { get; set; }
@@ -252,7 +252,7 @@ namespace Test_MauiApp1.Models
 
             }
         }
-        public ICollection<ListItem> ListItems { get; set; }
+        public IList<ListItem> ListItems { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

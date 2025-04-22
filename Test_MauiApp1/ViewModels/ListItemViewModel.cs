@@ -80,6 +80,8 @@ namespace Test_MauiApp1.ViewModels
                         ListItem list = null;
                         try
                         {
+                            AddListItemModel.Order = _list.ListItems.Any()? _list.ListItems.Max(a => a.Order) + 1:1;
+                         
                             list = await _listItemService.AddItem(_list.ListId, AddListItemModel, _listAggregator.ListAggregatorId);
                         }
                         catch (WebPermissionException ex)
@@ -100,7 +102,7 @@ namespace Test_MauiApp1.ViewModels
                             // ListItems.Clear();
                             //  ListItems = new ObservableCollection<ListItem>(_listItemsTemp.ToList());
                             //  ListItems.CollectionChanged += ListItems_CollectionChanged;
-                            ListItems.Add(list);
+                            ListItems.Insert(0,list);
                           //  SetAndSend(_listItemsTemp);
                            // OnPropertyChanged(nameof(ListItems));
                             //MessagingCenter.Send(this, "Save And Refresh New Order");
@@ -283,7 +285,7 @@ namespace Test_MauiApp1.ViewModels
             var tempListItem = App.User.ListAggregators.Where(a => a.ListAggregatorId == _listAggregator.ListAggregatorId).FirstOrDefault()
              .Lists.Where(a => a.ListId == _list.ListId).FirstOrDefault();
 
-            tempListItem.ListItems = new List<ListItem>(collection) as ICollection<ListItem>;
+            tempListItem.ListItems = new List<ListItem>(collection);
             //tempListItem.ListItems = ListItems as ICollection<ListItem>;
                 
 

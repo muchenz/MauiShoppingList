@@ -17,10 +17,12 @@
 
 
         <StackLayout>
-            <StackLayout  HorizontalOptions="Center" VerticalOptions="EndAndExpand" IsVisible="{Binding IsVisibleDeleteLabel}">
+            <Frame IsVisible="{Binding IsVisibleDeleteLabel}">
+                <StackLayout  HorizontalOptions="Center" VerticalOptions="EndAndExpand" IsVisible="{Binding IsVisibleDeleteLabel}">
 
                 <Label FontSize="Medium" TextColor="DodgerBlue" Text="Click on Item to delete." ></Label>
             </StackLayout>
+            </Frame>
             <Frame  IsVisible="{Binding IsVisibleAddItem}" BorderColor="Bisque"  BackgroundColor="Bisque" HasShadow="True" Padding="5">
                 <Frame  BorderColor="Bisque"  BackgroundColor="White" HasShadow="True" Padding="2">
                     <StackLayout >

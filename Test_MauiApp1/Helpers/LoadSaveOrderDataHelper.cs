@@ -16,14 +16,16 @@ namespace Test_MauiApp1.Helpers
             if (App.User == null || App.User.ListAggregators == null || !App.User.ListAggregators.Any()) return;
 
 
-            SetEntryOrder(App.User.ListAggregators);
+            SetEntryOrder2(App.User.ListAggregators);
 
             string UserName = "";
             if (Preferences.Default.ContainsKey("UserName"))
                 UserName = Preferences.Default.Get("UserName","");
 
             if (!Preferences.Default.ContainsKey($"{UserName}ListOrder"))
-                return;
+            {
+                SaveAllOrder(App.User.ListAggregators);
+            }
             List<OrderListAggrItem> tempListFromFile = null;
 
             try
@@ -53,7 +55,7 @@ namespace Test_MauiApp1.Helpers
 
 
                 ////////////////////
-                SetEntryOrder(listAggr.Lists);
+                SetEntryOrder2(listAggr.Lists);
 
 
                 foreach (var listList in listAggr.Lists)
@@ -69,7 +71,7 @@ namespace Test_MauiApp1.Helpers
                     }
 
 
-                    SetEntryOrder(listList.ListItems);
+                    SetEntryOrder2(listList.ListItems);
 
 
                     foreach (var listItem in listList.ListItems)
@@ -88,12 +90,12 @@ namespace Test_MauiApp1.Helpers
 
                     ResolveDoubleOrderValue(listList.ListItems);
 
-                    listList.ListItems = listList.ListItems.OrderBy(a => a.Order).ToList();
+                    listList.ListItems = listList.ListItems.OrderByDescending(a => a.Order).ToList();
                 }
 
                 ResolveDoubleOrderValue(listAggr.Lists);
 
-                listAggr.Lists = listAggr.Lists.OrderBy(a => a.Order).ToList();
+                listAggr.Lists = listAggr.Lists.OrderByDescending(a => a.Order).ToList();
                 ////////////////////////////
 
 
@@ -103,7 +105,7 @@ namespace Test_MauiApp1.Helpers
             ResolveDoubleOrderValue(App.User.ListAggregators);
 
 
-            App.User.ListAggregators = App.User.ListAggregators.OrderBy(a => a.Order).ToList();
+            App.User.ListAggregators = App.User.ListAggregators.OrderByDescending(a => a.Order).ToList();
 
         }
               
@@ -137,26 +139,37 @@ namespace Test_MauiApp1.Helpers
             }
 
         }
+        static void SetEntryOrder2(IEnumerable<IModelItemOrder> list)
+        {
+            int i = 1;
+            foreach (var item in list)
+            {
 
+                item.Order = item.Id;
+            }
+
+        }
         public static void SaveAllOrder(ICollection<ListAggregator> list)
         {
             var tempAggrList = new List<OrderListAggrItem>();
 
             int i = 1, j = 1, k = 1;
+            i = list.ToList().Count;
             list.ToList().ForEach(aggr =>
             {
 
-                var itemAggr = new OrderListAggrItem { Id = aggr.ListAggregatorId, Order = i++ };
+                var itemAggr = new OrderListAggrItem { Id = aggr.ListAggregatorId, Order = i-- };
 
-
+                j = aggr.Lists.Count;
                 aggr.Lists.ToList().ForEach(lista =>
                 {
-                    var itemList = new OrderListItem { Id = lista.ListId, Order = j++ };
+                    var itemList = new OrderListItem { Id = lista.ListId, Order = j-- };
 
+                    k = lista.ListItems.Count;
                     lista.ListItems.ToList().ForEach(item =>
                     {
 
-                        var itemItem = new OrderItem { Id = item.ListItemId, Order = k++ };
+                        var itemItem = new OrderItem { Id = item.ListItemId, Order = k-- };
 
                         itemList.List.Add(itemItem);
 

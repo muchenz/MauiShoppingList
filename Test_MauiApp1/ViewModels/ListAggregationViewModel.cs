@@ -189,6 +189,8 @@ namespace Test_MauiApp1.ViewModels
                         ListAggregator listAggr = null;
                         try
                         {
+                            AddListAggregatorModel.Order = ListAggr.Any() ? ListAggr.Max(a => a.Order) + 1 : 1;
+
                             listAggr = await _listItemService.AddItem(App.User.UserId, AddListAggregatorModel, -1);
                         }
                         catch (WebPermissionException)
@@ -198,7 +200,7 @@ namespace Test_MauiApp1.ViewModels
                         catch { }
 
                         if (listAggr != null)
-                            ListAggr.Add(listAggr);
+                            ListAggr.Insert(0, listAggr);
                     }
 
                     SelectedItem = null;
@@ -257,7 +259,7 @@ namespace Test_MauiApp1.ViewModels
                                 await Navigation.PopAsync();
                             }
 
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
 
                             }
@@ -391,12 +393,12 @@ namespace Test_MauiApp1.ViewModels
                 data = await _userService.GetUserDataTreeObjectsgAsync(_userName);
 
                 App.User = data;
+                LoadSaveOrderDataHelper.LoadListAggregatorsOrder();
 
                 ListAggr = new ObservableCollection<ListAggregator>(data.ListAggregators);
             }
             catch { }
 
-            LoadSaveOrderDataHelper.LoadListAggregatorsOrder();
 
             return data;
         }

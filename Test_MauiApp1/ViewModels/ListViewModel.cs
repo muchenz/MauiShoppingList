@@ -150,6 +150,8 @@ namespace Test_MauiApp1.ViewModels
                         List list = null;
                         try
                         {
+                            AddListModel.Order = List.Any() ? List.Max(a => a.Order) + 1 : 1;
+
                             list = await _listItemService.AddItem(_listAggregator.ListAggregatorId, AddListModel, _listAggregator.ListAggregatorId);
                         }
                         catch (WebPermissionException ex)
@@ -162,7 +164,7 @@ namespace Test_MauiApp1.ViewModels
                         }
                         if (list != null)
                         {
-                            List.Add(list);                           
+                            List.Insert(0, list);                           
                         }
                     }
 
