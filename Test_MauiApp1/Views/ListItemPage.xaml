@@ -92,8 +92,8 @@
                 <Label FontSize="Medium" TextColor="DodgerBlue" Text="Click on Item to delete." ></Label>
             </StackLayout>
             </Frame>
-            <Frame  IsVisible="{Binding IsVisibleAddItem}" BorderColor="Bisque"  BackgroundColor="Bisque" HasShadow="True" Padding="5">
-                <Frame  BorderColor="Bisque"  BackgroundColor="White" HasShadow="True" Padding="2">
+            <Frame  IsVisible="{Binding IsVisibleAddItem}" BorderColor="Black"  BackgroundColor="BlueViolet" HasShadow="True" Padding="2">
+                <Frame  BorderColor="BlueViolet"  BackgroundColor="WhiteSmoke" HasShadow="True" Padding="2">
                     <StackLayout >
 
                         <Entry Placeholder="Enter a name of list item" Text="{Binding AddListItemModel.ListItemName}"></Entry>
@@ -131,12 +131,12 @@
                                     NumberOfTapsRequired="1"  ></TapGestureRecognizer>
                             </StackLayout.GestureRecognizers>
 
-                            <Grid BackgroundColor="Beige" HeightRequest="40">
+                            <Grid BackgroundColor="Red" HeightRequest="40">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="1*"/>
                                     <ColumnDefinition Width="100*"/>
                                 </Grid.ColumnDefinitions>
-                                <StackLayout BackgroundColor="Beige" Padding="5,5,0,0" Grid.ColumnSpan="2" >
+                                <StackLayout BackgroundColor="#FAFAFF" Padding="5,5,0,0" Grid.ColumnSpan="2" >
                                     <BoxView  Color="{Binding Path=BindingContext.ListAggr.PermissionLevel, Source={x:Reference ListItemPageName},
                                         Converter={StaticResource PermissionToColorConverter}}" 
                                         HorizontalOptions="Fill" HeightRequest="30" ></BoxView>
@@ -145,7 +145,7 @@
 
                                 <Label  Grid.Column="1" Text="{Binding NameForView}"  
                                         HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
-                                        BackgroundColor="Beige" Opacity="1" VerticalOptions="Fill"  
+                                        BackgroundColor="#EAFAFF" Opacity="1" VerticalOptions="Fill"  
                                         TextDecorations="{Binding State, Converter={StaticResource StatusToTextDecoration}}"
                                         LineBreakMode="NoWrap" 
                                         Style="{DynamicResource ListItemTextStyle}" 

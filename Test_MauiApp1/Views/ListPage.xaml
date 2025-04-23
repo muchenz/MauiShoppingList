@@ -10,6 +10,22 @@
 
     </ContentPage.ToolbarItems>
     <ContentPage.Resources>
+        <Style  TargetType="StackLayout"  >
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                      Value="DodgerBlue" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+
         <converterLocal:PermissionToColorConverter x:Key="PermissionToColorConverter"/>
     </ContentPage.Resources>
 
@@ -23,8 +39,8 @@
                 <Label FontSize="Medium" TextColor="DodgerBlue" Text="Click on Item to delete." ></Label>
             </StackLayout>
             </Frame>
-            <Frame  IsVisible="{Binding IsVisibleAddItem}" BorderColor="Bisque"  BackgroundColor="Bisque" HasShadow="True" Padding="5">
-                <Frame  BorderColor="Bisque"  BackgroundColor="White" HasShadow="True" Padding="2">
+            <Frame  IsVisible="{Binding IsVisibleAddItem}" BorderColor="Black"  BackgroundColor="BlueViolet" HasShadow="True" Padding="2">
+                <Frame  BorderColor="BlueViolet"  BackgroundColor="WhiteSmoke" HasShadow="True" Padding="2">
                     <StackLayout >
 
                         <Entry Placeholder="Enter a name of new list" Text="{Binding AddListModel.Name}"></Entry>
@@ -61,7 +77,7 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
 
-                            <StackLayout Padding="5" Margin="0"  >
+                            <StackLayout Padding="2" Margin="0"  >
                                 <Border  BackgroundColor="WhiteSmoke" Padding="5,20,5,20" >
                                     <Grid>
                                         <Grid.ColumnDefinitions>

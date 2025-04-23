@@ -5,7 +5,43 @@
              xmlns:local="clr-namespace:Test_MauiApp1.Behaviors"
              Title="PermissionsPage">
 
+
+    <ContentPage.ToolbarItems>
+
+
+        <ToolbarItem Text="Invite user"  Command="{Binding InvitToolbarCommand}" />
+    </ContentPage.ToolbarItems>
+
     <StackLayout >
+    <Frame  IsVisible="{Binding IsVisibleInviteteItem}" BorderColor="Black"  BackgroundColor="BlueViolet" HasShadow="True" Padding="2" Margin="0,0,0,5">
+        <Frame  BorderColor="BlueViolet"  BackgroundColor="White" HasShadow="True" Padding="2">
+            <StackLayout Margin="0,0,0,5">
+                <StackLayout Orientation="Horizontal" Margin="0,10,0,0">
+                    <Label FontSize="Small" Text="Perrmision: " Margin="0, 8,0,0"></Label>
+
+                    <Picker SelectedIndex="{Binding InvitationNew.PermissionForPicker}" Margin="0,-11,0,0" HorizontalOptions="Center" WidthRequest="85"
+                                      >
+                        <Picker.Behaviors>
+                            <local:EventToCommandBehavior EventName="SelectedIndexChanged"
+                                           Command="{Binding Path=BindingContext.SelectedIndexChangedCommand, Source={x:Reference ItemsCollectionView2}}"
+                                           CommandParameter="{Binding}"/>
+                        </Picker.Behaviors>
+
+                        <Picker.Items>
+                            <x:String>Admin</x:String>
+                            <x:String>Editor</x:String>
+                            <x:String>Reader</x:String>
+                        </Picker.Items>
+                    </Picker>
+                </StackLayout>
+
+                <Entry Placeholder="Enter a user name" Text="{Binding InvitationNew.Name}"></Entry>
+                <Button Text="Send invitation"  HorizontalOptions="Center" Command="{Binding SendInvitationCommand}" Margin="0,5,0,0" ></Button>
+
+            </StackLayout>
+        </Frame>
+    </Frame>
+
 
 
         <Grid VerticalOptions="FillAndExpand">
@@ -116,9 +152,9 @@
                                                     <RowDefinition Height="1*"></RowDefinition>
                                                     <RowDefinition Height="1*"></RowDefinition>
                                                 </Grid.RowDefinitions>
-                                                <Button  VerticalOptions="EndAndExpand" Margin="0,0,0,0" Text="Save" Command="{Binding Path=BindingContext.SelectedIndexChangedCommand, Source={x:Reference ItemsCollectionView2}}"
+                                                <Button  VerticalOptions="EndAndExpand" Margin="2" Text="Save" Command="{Binding Path=BindingContext.SelectedIndexChangedCommand, Source={x:Reference ItemsCollectionView2}}"
                                                   CommandParameter="{Binding}"></Button>
-                                                <Button Grid.Row="1" VerticalOptions="EndAndExpand" Margin="0,0,0,0" Text="Delete" Command="{Binding Path=BindingContext.DeleteCommand, Source={x:Reference ItemsCollectionView2}}"
+                                                <Button Grid.Row="1" VerticalOptions="EndAndExpand" Margin="2" Text="Delete" Command="{Binding Path=BindingContext.DeleteCommand, Source={x:Reference ItemsCollectionView2}}"
                                                   CommandParameter="{Binding}"></Button>
                                             </Grid>
                                         </Grid>
