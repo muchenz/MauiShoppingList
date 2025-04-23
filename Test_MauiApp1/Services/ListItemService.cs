@@ -21,21 +21,23 @@ namespace Test_MauiApp1.Services
 
         public ListItemService(HttpClient httpClient, IConfiguration configuration)
         {
-            //_httpClient = httpClient;
+            _httpClient = httpClient;
 
-            HttpClientHandler handler = new HttpClientHandler();
-            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+            ////---------------------
+            //HttpClientHandler handler = new HttpClientHandler();
+            //handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
 
 
-            _httpClient = new HttpClient(handler);
+            //_httpClient = new HttpClient(handler);
 
-            var baseAddress = configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"];
-            _httpClient.BaseAddress = new Uri(baseAddress);
+            //var baseAddress = configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"];
+            //_httpClient.BaseAddress = new Uri(baseAddress);
             
-            // _httpClient.BaseAddress = new Uri("https://192.168.8.222:5003/api/");
-            // _httpClient.BaseAddress = new Uri("https://94.251.148.187:5003/api/");
+            //// _httpClient.BaseAddress = new Uri("https://192.168.8.222:5003/api/");
+            //// _httpClient.BaseAddress = new Uri("https://94.251.148.187:5003/api/");
 
-            _httpClient.DefaultRequestHeaders.Add("User-Agent", "BlazorServer");
+            //_httpClient.DefaultRequestHeaders.Add("User-Agent", "BlazorServer");
+            ////-------------------------------------------
             _configuration = configuration;
         }
 

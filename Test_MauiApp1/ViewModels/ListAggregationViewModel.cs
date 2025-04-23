@@ -55,7 +55,6 @@ namespace Test_MauiApp1.ViewModels
             MessagingCenter.Subscribe<ListItemViewModel>(this, "Request for New Data", async (a) =>
             {
                 var data = await RequestForNewData();
-                LoadSaveOrderDataHelper.LoadListAggregatorsOrder();
 
                 MessagingCenter.Send<ListAggregationViewModel, User>(this, "New Data", data);
 
@@ -64,7 +63,6 @@ namespace Test_MauiApp1.ViewModels
             MessagingCenter.Subscribe<ListViewModel>(this, "Request for New Data", async (a) =>
             {
                 var data = await RequestForNewData();
-                LoadSaveOrderDataHelper.LoadListAggregatorsOrder();
                 MessagingCenter.Send<ListAggregationViewModel, User>(this, "New Data", data);
 
             });
@@ -393,8 +391,8 @@ namespace Test_MauiApp1.ViewModels
                 data = await _userService.GetUserDataTreeObjectsgAsync(_userName);
 
                 App.User = data;
-                LoadSaveOrderDataHelper.LoadListAggregatorsOrder();
 
+                LoadSaveOrderDataHelper.LoadListAggregatorsOrder();
                 ListAggr = new ObservableCollection<ListAggregator>(data.ListAggregators);
             }
             catch { }
@@ -420,6 +418,8 @@ namespace Test_MauiApp1.ViewModels
             {
                 (_listDisposable, _hubConnection) = await HubConnectionHelper.EstablishSignalRConnectionAsync(App.Token, this, _configuration,
                     RequestForNewData, _listItemService, (a) => InvitationsString = a);
+                
+                App.SinalRId = _hubConnection.ConnectionId;
 
                 var invList = await _userService.GetInvitationsListAsync(App.UserName);
 

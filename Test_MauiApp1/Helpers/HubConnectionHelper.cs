@@ -33,6 +33,11 @@ namespace Test_MauiApp1.Helpers
                 };
             }).WithAutomaticReconnect().Build();
 
+            hubConnection.Reconnected += (connectionId) =>
+            {
+                App.SinalRId = connectionId;
+                return Task.CompletedTask;
+            };
 
             var dataAreChangeDispose = hubConnection.On("DataAreChanged_" + App.User.UserId,
                 async () =>
