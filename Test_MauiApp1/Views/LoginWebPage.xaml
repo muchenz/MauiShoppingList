@@ -3,10 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Test_MauiApp1.Views.LoginWebPage"
              Title="LoginWebPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <Grid>
+        
+        <WebView x:Name="WebView" Source="{Binding WebUrl}" 
+              Navigated="WebView_Navigated"
+             ></WebView>
+        <Label>ala</Label>
+    </Grid>
 </ContentPage>

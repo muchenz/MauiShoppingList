@@ -131,7 +131,8 @@ namespace Test_MauiApp1.ViewModels
             {
                 return new Command(async (list) => {
 
-                    await Navigation.PushAsync(App.Container.Resolve<LoginWebPage>());
+
+                    await  Navigation.PushAsync(App.Container.Resolve<LoginWebPage>());
 
                 });
 

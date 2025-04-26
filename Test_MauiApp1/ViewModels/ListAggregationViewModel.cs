@@ -395,7 +395,11 @@ namespace Test_MauiApp1.ViewModels
                 LoadSaveOrderDataHelper.LoadListAggregatorsOrder();
                 ListAggr = new ObservableCollection<ListAggregator>(data.ListAggregators);
             }
-            catch { }
+            catch (Exception ex) 
+            { 
+            
+            
+            }
 
 
             return data;

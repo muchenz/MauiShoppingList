@@ -40,20 +40,7 @@ namespace Test_MauiApp1.Services
             _configuration = configuration;
         }
 
-
-        private async Task SetRequestBearerAuthorizationHeader(HttpRequestMessage httpRequestMessage)
-        {
-
-            var token = App.Token;
-
-            if (token != null)
-            {
-
-                httpRequestMessage.Headers.Authorization
-                    = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", token);
-                // _httpClient.DefaultRequestHeaders.Add("Authorization", $"bearer  {token}");
-            }
-        }
+             
 
         public async Task<MessageAndStatusAndData<TokenAndEmailData>> GetTokenFromFacebookAccessToken(string accessFacebookToken)
         {
@@ -64,10 +51,6 @@ namespace Test_MauiApp1.Services
 
             // await SetRequestBearerAuthorizationHeader(requestMessage);
 
-            requestMessage.Content = new StringContent("");
-
-            requestMessage.Content.Headers.ContentType
-                = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
             MessageAndStatusAndData<TokenAndEmailData> message = null;
             try
@@ -137,9 +120,6 @@ namespace Test_MauiApp1.Services
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, "User/GetUserDataTree" + await querry.GetQuerryUrlAsync());
 
 
-            await SetRequestBearerAuthorizationHeader(requestMessage);
-
-
             var response = await _httpClient.SendAsync(requestMessage);
 
             var data = await response.Content.ReadAsStringAsync();
@@ -198,8 +178,6 @@ namespace Test_MauiApp1.Services
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, "Invitation/GetInvitationsList" + await querry.GetQuerryUrlAsync());
 
 
-            await SetRequestBearerAuthorizationHeader(requestMessage);
-
 
             var response = await _httpClient.SendAsync(requestMessage);
 
@@ -238,7 +216,6 @@ namespace Test_MauiApp1.Services
               = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
 
-            await SetRequestBearerAuthorizationHeader(requestMessage);
 
             var response = await _httpClient.SendAsync(requestMessage);
 
@@ -259,10 +236,8 @@ namespace Test_MauiApp1.Services
             querry.Add("userName", userName);
             // querry.Add("password", password);
 
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "User/GetListAggregationForPermission" + await querry.GetQuerryUrlAsync());
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "Permissions/GetListAggregationForPermission" + await querry.GetQuerryUrlAsync());
 
-
-            await SetRequestBearerAuthorizationHeader(requestMessage);
 
 
             var response = await _httpClient.SendAsync(requestMessage);
@@ -312,7 +287,7 @@ namespace Test_MauiApp1.Services
 
             string serializedUser = JsonConvert.SerializeObject(userPermissionToList);
 
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "User/" + actionName + await querry.GetQuerryUrlAsync());
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "Permissions/" + actionName + await querry.GetQuerryUrlAsync());
 
 
             requestMessage.Content = new StringContent(serializedUser);
@@ -321,7 +296,6 @@ namespace Test_MauiApp1.Services
               = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
 
-            await SetRequestBearerAuthorizationHeader(requestMessage);
             SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
 
             var response = await _httpClient.SendAsync(requestMessage);

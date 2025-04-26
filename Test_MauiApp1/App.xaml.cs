@@ -163,14 +163,18 @@ public class AuthHeaderHandler : DelegatingHandler
     {
 
         // var token = await _tokenService.GetAccessTokenAsync(); // lub .GetAccessToken() jeśli synchroniczne
+
+        if (!string.IsNullOrEmpty(App.Token))
+        {
+            var token = App.Token;
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
+
         if (!string.IsNullOrEmpty(App.SinalRId))
         {
-            // var token = App.Token
-            // request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
             request.Headers.Add("SignalRId", App.SinalRId);
-
         }
+
         request.Headers.Add("User-Agent", "BlazorServer");
         
         return await base.SendAsync(request, cancellationToken);
