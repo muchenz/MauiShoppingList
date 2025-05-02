@@ -65,9 +65,9 @@ namespace Test_MauiApp1.Services
             }
             catch
             {
-                message = new MessageAndStatusAndData<TokenAndEmailData>(null, true, "Connection problem.");
+                message =  MessageAndStatusAndData<TokenAndEmailData>.Fail("Connection problem.");
             }
-            return await Task.FromResult(message);
+            return message;
         }
 
         public async Task<MessageAndStatus> LoginAsync(string userName, string password)
