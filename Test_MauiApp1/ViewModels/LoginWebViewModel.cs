@@ -44,8 +44,10 @@ namespace Test_MauiApp1.ViewModels
                 App.Token = response.Data.Token;
                 App.FacebookToken = accessFacebookToken;
                 await Navigation.PushAsync(App.Container.Resolve<ListAggregationPage>());
-                Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
-
+                if (Navigation.NavigationStack.Count > 1)
+                {
+                    Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
+                }
 
             }
             else

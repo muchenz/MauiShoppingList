@@ -49,23 +49,24 @@ namespace Test_MauiApp1.Services
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, "User/FacebookToken" + await querry.GetQuerryUrlAsync());
 
-            // await SetRequestBearerAuthorizationHeader(requestMessage);
-
-
             MessageAndStatusAndData<TokenAndEmailData> message = null;
             try
             {
-
-
                 var response = await _httpClient.SendAsync(requestMessage);
-
                 var data = await response.Content.ReadAsStringAsync();
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
 
-                message = JsonConvert.DeserializeObject<MessageAndStatusAndData<TokenAndEmailData>>(data);
+                    var tokenData = JsonConvert.DeserializeObject<TokenAndEmailData>(data);
+
+                    return MessageAndStatusAndData<TokenAndEmailData>.Ok(tokenData);
+                }
+                message = MessageAndStatusAndData<TokenAndEmailData>.Fail(
+                    JsonConvert.DeserializeObject<ProblemDetails >(data).Title);
             }
             catch
             {
-                message =  MessageAndStatusAndData<TokenAndEmailData>.Fail("Connection problem.");
+                message = MessageAndStatusAndData<TokenAndEmailData>.Fail( "Connection problem.");
             }
             return message;
         }
