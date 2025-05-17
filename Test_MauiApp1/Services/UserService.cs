@@ -13,7 +13,7 @@ using Test_MauiApp1.Models.Response;
 
 namespace Test_MauiApp1.Services
 {
-    public  class UserService
+    public class UserService
     {
 
 
@@ -25,24 +25,24 @@ namespace Test_MauiApp1.Services
             _httpClient = httpClient;
 
             //----------------------
-           // HttpClientHandler handler = new HttpClientHandler();
-           // handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+            // HttpClientHandler handler = new HttpClientHandler();
+            // handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
 
-          
-           //  _httpClient = new HttpClient(handler);
 
-           // var baseAddress = configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"];
-           // _httpClient.BaseAddress = new Uri(baseAddress);
+            //  _httpClient = new HttpClient(handler);
 
-           // //_httpClient.BaseAddress = new Uri("https://192.168.8.222:5003/api/");
-           //// _httpClient.BaseAddress = new Uri("https://94.251.148.187:5003/api/");
+            // var baseAddress = configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"];
+            // _httpClient.BaseAddress = new Uri(baseAddress);
 
-           // _httpClient.DefaultRequestHeaders.Add("User-Agent", "BlazorServer");
+            // //_httpClient.BaseAddress = new Uri("https://192.168.8.222:5003/api/");
+            //// _httpClient.BaseAddress = new Uri("https://94.251.148.187:5003/api/");
+
+            // _httpClient.DefaultRequestHeaders.Add("User-Agent", "BlazorServer");
             //----------------------
             _configuration = configuration;
         }
 
-             
+
 
         public async Task<MessageAndStatusAndData<TokenAndEmailData>> GetTokenFromFacebookAccessToken(string accessFacebookToken)
         {
@@ -64,11 +64,11 @@ namespace Test_MauiApp1.Services
                     return MessageAndStatusAndData<TokenAndEmailData>.Ok(tokenData);
                 }
                 message = MessageAndStatusAndData<TokenAndEmailData>.Fail(
-                    JsonConvert.DeserializeObject<ProblemDetails >(data).Title);
+                    JsonConvert.DeserializeObject<ProblemDetails>(data).Title);
             }
             catch
             {
-                message = MessageAndStatusAndData<TokenAndEmailData>.Fail( "Connection problem.");
+                message = MessageAndStatusAndData<TokenAndEmailData>.Fail("Connection problem.");
             }
             return message;
         }
@@ -93,7 +93,8 @@ namespace Test_MauiApp1.Services
             {
                 var source = new CancellationTokenSource();
 
-                _ = Task.Run(async () => {
+                _ = Task.Run(async () =>
+                {
                     await Task.Delay(10000);
                     source.Cancel();
                 });
@@ -117,7 +118,7 @@ namespace Test_MauiApp1.Services
             }
             catch
             {
-                return  MessageAndStatusAndData<UserNameAndTokenResponse>.Fail("Connection problem.");
+                return MessageAndStatusAndData<UserNameAndTokenResponse>.Fail("Connection problem.");
             }
 
 
@@ -154,31 +155,39 @@ namespace Test_MauiApp1.Services
             return dataObjects;
         }
 
-        public async Task<string> RegisterAsync(RegistrationModel model)
+        public async Task<MessageAndStatusAndData<string>> RegisterAsync(RegistrationModel model)
         {
 
-            var querry = new QueryBuilder();
-            querry.Add("userName", model.UserName);
-            querry.Add("password", model.Password);
+            var loginRequest = new RegistrationRequest
+            {
+                UserName = model.UserName,
+                Password = model.Password
+            };
 
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "User/Register" + await querry.GetQuerryUrlAsync());
+            var json = JsonConvert.SerializeObject(loginRequest);
 
-            // await SetRequestBearerAuthorizationHeader(requestMessage);
-
-            requestMessage.Content = new StringContent("");
-
-            requestMessage.Content.Headers.ContentType
-                = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "User/Register")
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
 
 
             var response = await _httpClient.SendAsync(requestMessage);
 
-            var token = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                var token = await response.Content.ReadAsStringAsync();
 
-            var message = JsonConvert.DeserializeObject<MessageAndStatus>(token);
+                return MessageAndStatusAndData<string>.Ok(token);
+            }
 
-
-            return await Task.FromResult(message.Message);
+            return response switch
+            {
+                { StatusCode: System.Net.HttpStatusCode.Conflict } =>
+                     MessageAndStatusAndData<string>.Fail("User exists."),
+                _ =>
+                    MessageAndStatusAndData<string>.Fail("Server error."),
+            };
 
         }
 

@@ -71,7 +71,7 @@ namespace Test_MauiApp1.ViewModels
                 if (!response.IsError)
                 {
                     App.UserName = Model.UserName;
-                    App.Token = response.Message;
+                    App.Token = response.Data.Token;
 
                     await Navigation.PushAsync(App.Container.Resolve<ListAggregationPage>());
                 }
