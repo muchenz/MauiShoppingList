@@ -60,7 +60,7 @@
             <RefreshView IsRefreshing="{Binding IsBusy, Mode=TwoWay}" Command="{Binding LoadItemsCommand}" Margin="0" 
                          >
                 <CollectionView x:Name="ItemsCollectionView" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" SelectionMode="Single"
-                ItemsSource="{Binding ListAggrForPerm}" SelectionChangedCommand="{Binding SelectionChangedCommand}" Margin="0" >
+                ItemsSource="{Binding ListAggrWithUsersPerm}" SelectionChangedCommand="{Binding SelectionChangedCommand}" Margin="0" >
                     <!--<CollectionView.Behaviors>
                         <local:EventToCommandBehavior EventName="SelectionChanged"
                                                   Command="{Binding SelectionChangedCommand}"
@@ -81,7 +81,7 @@
 
                                 <Border  BackgroundColor="WhiteSmoke"  >
                             <StackLayout Padding="3" Margin="0"  >
-                                    <Label Text="{Binding ListAggregatorEntity.ListAggregatorName}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                    <Label Text="{Binding ListAggregator.ListAggregatorName}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
                                    BackgroundColor="WhiteSmoke"  
                                 LineBreakMode="NoWrap" 
                                 Style="{DynamicResource ListItemTextStyle}" 
@@ -105,7 +105,7 @@
                 <RefreshView Grid.Row="2" IsVisible="{Binding IsNotVisibleInvitationFrame}" IsRefreshing="{Binding IsBusy2, Mode=TwoWay}" Command="{Binding LoadItemsCommand2}" Margin="0,0,0,0">
 
                     <CollectionView    x:Name="ItemsCollectionView2" Margin="0,0, 0, 0" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" SelectionMode="Single"
-                ItemsSource="{Binding SelectedItem.Users}" SelectionChangedCommand="{Binding SelectionChangedCommand}"  
+                ItemsSource="{Binding SelectedItem.UsersPermToListAggr}" SelectionChangedCommand="{Binding SelectionChangedCommand}"  
                                    HeightRequest="{Binding Source={RelativeSource FindAncestor, AncestorType={x:Type StackLayout}}, Path=Height}" >
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
