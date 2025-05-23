@@ -379,4 +379,21 @@ namespace Test_MauiApp1.Models
         public event PropertyChangedEventHandler PropertyChanged;
     }
 
+    public static class SiganalREventName
+    {
+        public const string ListItemEdited = nameof(ListItemEdited);
+        public const string ListItemAdded = nameof(ListItemAdded);
+        public const string ListItemDeleted = nameof(ListItemDeleted);
+        public const string InvitationAreChanged = nameof(InvitationAreChanged);
+        public const string DataAreChanged = nameof(DataAreChanged);
+    }
+
+
+    public abstract record ListItemSignalREvent(int ListItemId, int ListAggregationId, string SignalRId);
+    public record AddListItemSignalREvent(int ListItemId, int ListAggregationId, int ListId, string SignalRId) :
+        ListItemSignalREvent(ListItemId, ListAggregationId, SignalRId);
+    public record DeleteListItemSignalREvent(int ListItemId, int ListAggregationId, string SignalRId) :
+        ListItemSignalREvent(ListItemId, ListAggregationId, SignalRId);
+    public record EditListItemSignalREvent(int ListItemId, int ListAggregationId, string SignalRId) :
+        ListItemSignalREvent(ListItemId, ListAggregationId, SignalRId);
 }
