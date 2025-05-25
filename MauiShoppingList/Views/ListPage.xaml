@@ -33,6 +33,12 @@
 
 
         <StackLayout>
+            <Frame IsVisible="{Binding IsVisibleDeletedListLabel}">
+                <StackLayout  HorizontalOptions="Center" VerticalOptions="EndAndExpand" >
+
+                    <Label FontSize="Medium" TextColor="DodgerBlue" Text="Item was deleted or you don't have permission." ></Label>
+                </StackLayout>
+            </Frame>
             <Frame IsVisible="{Binding IsVisibleDeleteLabel}">
                 <StackLayout  HorizontalOptions="Center" VerticalOptions="EndAndExpand" IsVisible="{Binding IsVisibleDeleteLabel}">
 

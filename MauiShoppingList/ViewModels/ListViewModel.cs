@@ -222,7 +222,7 @@ namespace Test_MauiApp1.ViewModels
                 if (temPlist==null)
                 {
                     List = new ObservableCollection<List>();
-                    temPlist.Lists = List;
+                    NavigateWhenListArgIsNull();
 
                 }
                 else
@@ -236,7 +236,17 @@ namespace Test_MauiApp1.ViewModels
                 List = new ObservableCollection<List>();
             }
         }
-
+        public bool _isVisibleDeletedListLabel = false;
+        public bool IsVisibleDeletedListLabel { get { return _isVisibleDeletedListLabel; } set { SetProperty(ref _isVisibleDeletedListLabel, value); } }
+        void NavigateWhenListArgIsNull()
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                IsVisibleDeletedListLabel = true;
+                await Task.Delay(2000);
+                await Navigation.PopAsync();
+            });
+        }
         protected override async  Task OnAppearingAsync()
         {
 

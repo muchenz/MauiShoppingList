@@ -189,7 +189,7 @@ namespace Test_MauiApp1.ViewModels
             }
         }
         bool _isVisibleDeleteLabel;
-        public bool IsVisibleDeleteLabel { get { return _isVisibleDeleteLabel; } set { SetProperty(ref _isVisibleDeletedListLabel, value); } }
+        public bool IsVisibleDeleteLabel { get { return _isVisibleDeleteLabel; } set { SetProperty(ref _isVisibleDeleteLabel, value); } }
 
         public ICommand IsVisibleDeleteLabelCommand
         {
@@ -236,10 +236,13 @@ namespace Test_MauiApp1.ViewModels
 
         }
 
-         async Task  NavigateWhenArgumentNullException(ArgumentNullException ex)
+        public bool _isVisibleDeletedListLabel = false;
+        public bool IsVisibleDeletedListLabel { get { return _isVisibleDeletedListLabel; } set { SetProperty(ref _isVisibleDeletedListLabel, value); } }
+
+        async Task  NavigateWhenArgumentNullException(ArgumentNullException ex)
         {
             IsVisibleDeletedListLabel = true;
-            await Task.Delay(1000);
+            await Task.Delay(2000);
             if (ex.ParamName == "ListAggr")
             {
                 var a = Navigation.NavigationStack.Count;
@@ -261,8 +264,7 @@ namespace Test_MauiApp1.ViewModels
             set { SetProperty(ref _listAggr, value); }
         }
 
-        public bool _isVisibleDeletedListLabel =false;
-        public bool IsVisibleDeletedListLabel { get { return _isVisibleDeletedListLabel; } set { SetProperty(ref _isVisibleDeleteLabel, value); } }
+        
         private void GetNewDataFromUser(User arg)
         {
             if (arg == null) return;
@@ -276,11 +278,11 @@ namespace Test_MauiApp1.ViewModels
                 if (tempList == null) throw new ArgumentNullException("List");
 
 
-                var temPlistItem = tempList.ListItems.ToList();
+                var tempListItem = tempList.ListItems.ToList();
 
 
 
-                if (temPlistItem == null)
+                if (tempListItem == null)
                 {
 
                     //ListItems = new ObservableCollection<ListItem>();
@@ -294,7 +296,7 @@ namespace Test_MauiApp1.ViewModels
                     ListItems.CollectionChanged -= ListItems_CollectionChanged;
                     ListItems.Clear();
                     //ListItems = new ObservableCollection<ListItem>(temLlist);
-                    temPlistItem.ForEach(a => ListItems.Add(a));
+                    tempListItem.ForEach(a => ListItems.Add(a));
                     ListItems.CollectionChanged += ListItems_CollectionChanged;
                 }
 
