@@ -86,22 +86,30 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Frame IsVisible="{Binding IsVisibleDeleteLabel}">
-            <StackLayout  HorizontalOptions="Center" VerticalOptions="EndAndExpand" >
+            <VerticalStackLayout>
+                <Frame IsVisible="{Binding IsVisibleDeletedListLabel}">
+                    <StackLayout  HorizontalOptions="Center" VerticalOptions="EndAndExpand" >
 
-                <Label FontSize="Medium" TextColor="DodgerBlue" Text="Click on Item to delete." ></Label>
-            </StackLayout>
-            </Frame>
-            <Frame  IsVisible="{Binding IsVisibleAddItem}" BorderColor="Black"  BackgroundColor="BlueViolet" HasShadow="True" Padding="2">
-                <Frame  BorderColor="BlueViolet"  BackgroundColor="WhiteSmoke" HasShadow="True" Padding="2">
-                    <StackLayout >
-
-                        <Entry Placeholder="Enter a name of list item" Text="{Binding AddListItemModel.ListItemName}"></Entry>
-                        <Button Text="Save" HorizontalOptions="Center" Command="{Binding AddListItemCommand}"  ></Button>
-
+                        <Label FontSize="Medium" TextColor="DodgerBlue" Text="This list was deleted." ></Label>
                     </StackLayout>
                 </Frame>
-            </Frame>
+                <Frame IsVisible="{Binding IsVisibleDeleteLabel}">
+                    <StackLayout  HorizontalOptions="Center" VerticalOptions="EndAndExpand" >
+
+                        <Label FontSize="Medium" TextColor="DodgerBlue" Text="Click on Item to delete." ></Label>
+                    </StackLayout>
+                </Frame>
+                <Frame  IsVisible="{Binding IsVisibleAddItem}" BorderColor="Black"  BackgroundColor="BlueViolet" HasShadow="True" Padding="2">
+                    <Frame  BorderColor="BlueViolet"  BackgroundColor="WhiteSmoke" HasShadow="True" Padding="2">
+                        <StackLayout >
+
+                            <Entry Placeholder="Enter a name of list item" Text="{Binding AddListItemModel.ListItemName}"></Entry>
+                            <Button Text="Save" HorizontalOptions="Center" Command="{Binding AddListItemCommand}"  ></Button>
+
+                        </StackLayout>
+                    </Frame>
+                </Frame>
+            </VerticalStackLayout>
 
 
 

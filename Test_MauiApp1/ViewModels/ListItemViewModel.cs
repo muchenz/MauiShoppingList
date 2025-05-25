@@ -189,7 +189,7 @@ namespace Test_MauiApp1.ViewModels
             }
         }
         bool _isVisibleDeleteLabel;
-        public bool IsVisibleDeleteLabel { get { return _isVisibleDeleteLabel; } set { SetProperty(ref _isVisibleDeleteLabel, value); } }
+        public bool IsVisibleDeleteLabel { get { return _isVisibleDeleteLabel; } set { SetProperty(ref _isVisibleDeletedListLabel, value); } }
 
         public ICommand IsVisibleDeleteLabelCommand
         {
@@ -217,8 +217,17 @@ namespace Test_MauiApp1.ViewModels
         {
             MessagingCenter.Subscribe<ListAggregationViewModel, User>(this, "New Data", (sender, arg) =>
             {
-                GetNewDataFromUser(arg);
-
+                try
+                {
+                    GetNewDataFromUser(arg);
+                }
+                catch (ArgumentNullException ex)
+                {
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        _ = NavigateWhenArgumentNullException(ex);
+                    });
+                }
                 if (IsBusy) IsBusy = false;
 
             });
@@ -226,24 +235,52 @@ namespace Test_MauiApp1.ViewModels
             GetNewDataFromUser(App.User);
 
         }
+
+         async Task  NavigateWhenArgumentNullException(ArgumentNullException ex)
+        {
+            IsVisibleDeletedListLabel = true;
+            await Task.Delay(1000);
+            if (ex.ParamName == "ListAggr")
+            {
+                var a = Navigation.NavigationStack.Count;
+                Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
+                await Navigation.PopAsync();
+
+            }
+            else
+            {
+                await Navigation.PopAsync();
+            }
+        }
+        
+
         ListAggregator _listAggr;
         public ListAggregator ListAggr
         {
             get { return _listAggr; }
             set { SetProperty(ref _listAggr, value); }
         }
+
+        public bool _isVisibleDeletedListLabel =false;
+        public bool IsVisibleDeletedListLabel { get { return _isVisibleDeletedListLabel; } set { SetProperty(ref _isVisibleDeleteLabel, value); } }
         private void GetNewDataFromUser(User arg)
         {
             if (arg == null) return;
 
             try
             {
-                var temLlist = arg.ListAggregators.Where(a => a.ListAggregatorId == _listAggregator.ListAggregatorId).FirstOrDefault()
-               .Lists.Where(a => a.ListId == _list.ListId).FirstOrDefault().ListItems.ToList();
-
                 ListAggr = arg.ListAggregators.Where(a => a.ListAggregatorId == _listAggregator.ListAggregatorId).FirstOrDefault();
+                if (ListAggr == null) throw new ArgumentNullException("ListAggr");
 
-                if (temLlist == null)
+                var tempList = ListAggr.Lists.Where(a => a.ListId == _list.ListId).FirstOrDefault();
+                if (tempList == null) throw new ArgumentNullException("List");
+
+
+                var temPlistItem = tempList.ListItems.ToList();
+
+
+
+                if (temPlistItem == null)
                 {
 
                     //ListItems = new ObservableCollection<ListItem>();
@@ -254,17 +291,21 @@ namespace Test_MauiApp1.ViewModels
                 {
                     //_listItemsTemp = new List<ListItem>(temLlist);
 
-                    ListItems.CollectionChanged-= ListItems_CollectionChanged;
+                    ListItems.CollectionChanged -= ListItems_CollectionChanged;
                     ListItems.Clear();
                     //ListItems = new ObservableCollection<ListItem>(temLlist);
-                    temLlist.ForEach(a => ListItems.Add(a));
-                    ListItems.CollectionChanged += ListItems_CollectionChanged;                  
+                    temPlistItem.ForEach(a => ListItems.Add(a));
+                    ListItems.CollectionChanged += ListItems_CollectionChanged;
                 }
 
             }
+            catch (ArgumentNullException)
+            {
+                throw;
+            }
             catch
             {
-                    ListItems.Clear();
+                ListItems.Clear();
 
                 //ListItems = new ObservableCollection<ListItem>();
 
