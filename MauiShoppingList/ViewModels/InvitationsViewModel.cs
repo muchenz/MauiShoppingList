@@ -64,7 +64,7 @@ namespace Test_MauiApp1.ViewModels
                 return new Command(async () => {
                     try
                     {
-                        var temPlist = await _userService.GetInvitationsListAsync(App.UserName);
+                        var temPlist = await _userService.GetInvitationsListAsync();
 
                         Invitations = new ObservableCollection<Invitation>(temPlist);
                     }
@@ -109,7 +109,7 @@ namespace Test_MauiApp1.ViewModels
         {
             try
             {
-                var temPlist = await _userService.GetInvitationsListAsync(App.UserName);
+                var temPlist = await _userService.GetInvitationsListAsync();
 
                 Invitations = new ObservableCollection<Invitation>(temPlist);
             }

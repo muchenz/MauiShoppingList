@@ -221,7 +221,7 @@ namespace Test_MauiApp1.ViewModels
 
                 if (temPlist==null)
                 {
-                    List = new ObservableCollection<List>();
+                    List.Clear();
                     NavigateWhenListArgIsNull();
 
                 }
@@ -233,7 +233,7 @@ namespace Test_MauiApp1.ViewModels
             }
             catch
             {
-                List = new ObservableCollection<List>();
+                List.Clear();
             }
         }
         public bool _isVisibleDeletedListLabel = false;

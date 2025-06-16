@@ -17,7 +17,7 @@ namespace Test_MauiApp1.Helpers
     {
         public static async Task<(List<IDisposable>, HubConnection)> EstablishSignalRConnectionAsync(string token, ListAggregationViewModel vm,
             IConfiguration configuration, Func<Task<User>> RequestForNewData, ListItemService listItemService,
-            Action<string> SetInvitationString)
+            Func<Task> SetInvitaionNewIndicator)
         {
             var signalRAddress = configuration.GetSection("AppSettings")["SignlRAddress"];
             HubConnection hubConnection = new HubConnectionBuilder().WithUrl(signalRAddress, (opts) =>
@@ -141,7 +141,7 @@ namespace Test_MauiApp1.Helpers
             var newInvitationDispose = hubConnection.On("InvitationAreChanged_" + App.User.UserId, async () =>
             {
 
-                SetInvitationString("NEW");
+                await SetInvitaionNewIndicator();
             });
 
 

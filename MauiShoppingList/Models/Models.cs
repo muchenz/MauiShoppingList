@@ -46,7 +46,7 @@ namespace Test_MauiApp1.Models
         public Action<bool> OnCompleted { get; set; }
     }
 
-    public class MessageSatus
+    public class MessageStatus
     {
         public const string OK = "OK";
         public const string Error = "ERROR";
@@ -55,7 +55,7 @@ namespace Test_MauiApp1.Models
     public class MessageAndStatus
     {
         public bool IsError => !IsSuccess;
-        public bool IsSuccess => Status == MessageSatus.OK;
+        public bool IsSuccess => Status == MessageStatus.OK;
         public string Status { get; set; }
         public string Message { get; set; }
 
@@ -68,8 +68,8 @@ namespace Test_MauiApp1.Models
         {
 
         }
-        public static MessageAndStatus Ok(string msg) => new MessageAndStatus(msg, MessageSatus.OK);
-        public static MessageAndStatus Fail(string msg) => new MessageAndStatus(msg, MessageSatus.Error);
+        public static MessageAndStatus Ok(string msg = MessageStatus.OK) => new MessageAndStatus(msg, MessageStatus.OK);
+        public static MessageAndStatus Fail(string msg = MessageStatus.Error) => new MessageAndStatus(msg, MessageStatus.Error);
     }
 
     public class MessageAndStatusAndData<T> : MessageAndStatus
@@ -84,10 +84,10 @@ namespace Test_MauiApp1.Models
         public T Data { get; set; }
 
         public static MessageAndStatusAndData<T> Ok(T data) =>
-            new MessageAndStatusAndData<T>(data, string.Empty, MessageSatus.OK);
+            new MessageAndStatusAndData<T>(data, string.Empty, MessageStatus.OK);
 
         public static MessageAndStatusAndData<T> Fail(string msg) =>
-           new MessageAndStatusAndData<T>(default, msg, MessageSatus.Error);
+           new MessageAndStatusAndData<T>(default, msg, MessageStatus.Error);
     }
     public static class ItemState
     {

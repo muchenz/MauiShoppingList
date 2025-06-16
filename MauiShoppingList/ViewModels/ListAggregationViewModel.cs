@@ -295,7 +295,7 @@ namespace Test_MauiApp1.ViewModels
             {
                 return new Command(async (listAggr) =>
                 {
-                    InvitationsString = "";
+                    //InvitationsString = "";
 
                     await Navigation.PushAsync(App.Container.Resolve<InvitationsPage>(
                         new ResolverOverride[] { new ParameterOverride("listAggregator", listAggr) }));
@@ -392,6 +392,7 @@ namespace Test_MauiApp1.ViewModels
 
                 LoadSaveOrderDataHelper.LoadListAggregatorsOrder();
                 ListAggr = new ObservableCollection<ListAggregator>(data.ListAggregators);
+                App.User.ListAggregators = ListAggr;
             }
             catch (Exception ex) 
             { 
@@ -419,14 +420,11 @@ namespace Test_MauiApp1.ViewModels
             try
             {
                 (_listDisposable, _hubConnection) = await HubConnectionHelper.EstablishSignalRConnectionAsync(App.Token, this, _configuration,
-                    RequestForNewData, _listItemService, (a) => InvitationsString = a);
+                    RequestForNewData, _listItemService, SetInvitaionNewIndicator);
                 
                 App.SinalRId = _hubConnection.ConnectionId;
 
-                var invList = await _userService.GetInvitationsListAsync(App.UserName);
-
-                if (invList.Count > 0)
-                    InvitationsString = "NEW";
+                await SetInvitaionNewIndicator();
 
             }
 
@@ -435,6 +433,15 @@ namespace Test_MauiApp1.ViewModels
 
 
             }
+        }
+
+        async Task SetInvitaionNewIndicator()
+        {
+            var invList = await _userService.GetInvitationsListAsync();
+
+            if (invList.Count > 0)
+                InvitationsString = "NEW";
+
         }
 
 
