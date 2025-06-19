@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Maui;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,16 +10,15 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Unity;
-using Unity.Injection;
-using Unity.Resolution;
-using Microsoft.Maui;
 using Test_MauiApp1.Helpers;
 using Test_MauiApp1.Models;
 using Test_MauiApp1.Services;
-using Test_MauiApp1.Views;
 using Test_MauiApp1.ViewModels;
-using CommunityToolkit.Mvvm.Messaging;
+using Test_MauiApp1.ViewModels.Messages;
+using Test_MauiApp1.Views;
+using Unity;
+using Unity.Injection;
+using Unity.Resolution;
 
 
 namespace Test_MauiApp1.ViewModels
@@ -30,6 +31,7 @@ namespace Test_MauiApp1.ViewModels
         private readonly ListItemService _listItemService;
         private readonly IConfiguration _configuration;
         private readonly StateService _stateService;
+        private readonly IMessenger _messenger;
         string _userName;
         ListAggregator _selectedItem;
         public ListAggregator SelectedItem { get { return _selectedItem; } set { SetProperty(ref _selectedItem, value); } }
@@ -47,27 +49,27 @@ namespace Test_MauiApp1.ViewModels
         ListAggregator _addListAggregatorModel = new ListAggregator();
         public ListAggregator AddListAggregatorModel { get { return _addListAggregatorModel; } set { SetProperty(ref _addListAggregatorModel, value); } }
 
-        public ListAggregationViewModel(UserService userService, ListItemService listItemService, IConfiguration configuration, StateService stateService)
+        public ListAggregationViewModel(UserService userService, ListItemService listItemService, IConfiguration configuration,
+            StateService stateService, IMessenger messenger)
         {
             _userName = stateService.StateInfo.UserName;
             _userService = userService;
             _listItemService = listItemService;
             _configuration = configuration;
             _stateService = stateService;
-            MessagingCenter.Subscribe<ListItemViewModel>(this, "Request for New Data", async (a) =>
+            _messenger = messenger;
+
+
+            _messenger.Register<RequestForNewDataMessage>(this, async  (r, m) =>
             {
+
                 var data = await RequestForNewData();
 
-                MessagingCenter.Send<ListAggregationViewModel, User>(this, "New Data", data);
+                _messenger.Send(new NewDataMessage() { User = data });
 
             });
 
-            MessagingCenter.Subscribe<ListViewModel>(this, "Request for New Data", async (a) =>
-            {
-                var data = await RequestForNewData();
-                MessagingCenter.Send<ListAggregationViewModel, User>(this, "New Data", data);
-
-            });
+            
 
             MessagingCenter.Subscribe<ListItemViewModel>(this, "Save And Refresh New Order", (a) =>
            {
@@ -459,7 +461,7 @@ namespace Test_MauiApp1.ViewModels
                 {
                     data = await RequestForNewData();
 
-                    MessagingCenter.Send<ListAggregationViewModel, User>(this, "New Data", data);
+                    _messenger.Send(new NewDataMessage { User = data });
                 }
                 catch { }
 

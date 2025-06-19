@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using Test_MauiApp1.Models;
 using Test_MauiApp1.Services;
 using Test_MauiApp1.ViewModels;
+using Test_MauiApp1.ViewModels.Messages;
 
 namespace Test_MauiApp1.Helpers
 {
@@ -17,7 +19,7 @@ namespace Test_MauiApp1.Helpers
     {
         public static async Task<(List<IDisposable>, HubConnection)> EstablishSignalRConnectionAsync(ListAggregationViewModel vm,
             IConfiguration configuration, Func<Task<User>> RequestForNewData, ListItemService listItemService,
-            Func<Task> SetInvitaionNewIndicator, StateService stateService)
+            Func<Task> SetInvitaionNewIndicator, StateService stateService, IMessenger messenger)
         {
             var signalRAddress = configuration.GetSection("AppSettings")["SignlRAddress"];
             HubConnection hubConnection = new HubConnectionBuilder().WithUrl(signalRAddress, (opts) =>
@@ -45,8 +47,7 @@ namespace Test_MauiApp1.Helpers
             {
                 var data = await RequestForNewData();
 
-                MessagingCenter.Send<ListAggregationViewModel, User>(vm, "New Data", data);
-
+                messenger.Send(new NewDataMessage { User=data});
                 return;
             });
 
@@ -96,7 +97,8 @@ namespace Test_MauiApp1.Helpers
                                 {
                                     tempList.Insert(0, item);
                                 }
-                                MessagingCenter.Send<ListAggregationViewModel, User>(vm, "New Data", stateService.StateInfo.User);
+                                
+                                messenger.Send(new NewDataMessage { User = stateService.StateInfo.User });
                                 break;
                             }
                         case SiganalREventName.ListItemDeleted:
@@ -116,7 +118,8 @@ namespace Test_MauiApp1.Helpers
 
                                 founfList.ListItems.Remove(foundListItem);
 
-                                MessagingCenter.Send<ListAggregationViewModel, User>(vm, "New Data", stateService.StateInfo.User);
+                                messenger.Send(new NewDataMessage { User = stateService.StateInfo.User });
+
                                 break;
                             }
                         default:

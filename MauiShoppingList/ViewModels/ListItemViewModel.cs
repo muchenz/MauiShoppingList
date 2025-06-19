@@ -1,19 +1,21 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Test_MauiApp1.ViewModels;
-using Unity;
-using Unity.Resolution;
 using Test_MauiApp1.Helpers;
 using Test_MauiApp1.Models;
 using Test_MauiApp1.Services;
-using CommunityToolkit.Mvvm.Input;
-using System.Diagnostics;
+using Test_MauiApp1.ViewModels;
+using Test_MauiApp1.ViewModels.Messages;
+using Unity;
+using Unity.Resolution;
 
 namespace Test_MauiApp1.ViewModels
 {
@@ -24,6 +26,7 @@ namespace Test_MauiApp1.ViewModels
         private readonly ListAggregator _listAggregator;
         private readonly List _list;
         private readonly StateService _stateService;
+        private readonly IMessenger _messenger;
         string _userName;
 
         ListItem _addListItemModel = new ListItem();
@@ -31,9 +34,11 @@ namespace Test_MauiApp1.ViewModels
 
         ListItem _selectedItem;
         public ListItem SelectedItem { get { return _selectedItem; } set { SetProperty(ref _selectedItem, value); } }
-        public ListItemViewModel(UserService userService, ListItemService listItemService,  StateService stateService,  ListAggregator listAggregator, List list)
+        public ListItemViewModel(UserService userService, ListItemService listItemService,  StateService stateService,IMessenger messenger,
+            ListAggregator listAggregator, List list)
         {
             _stateService = stateService;
+            _messenger = messenger;
             _userName = stateService.StateInfo.UserName;
             _userService = userService;
             _listItemService = listItemService;
@@ -214,11 +219,14 @@ namespace Test_MauiApp1.ViewModels
 
         protected override async Task OnAppearingAsync()
         {
-            MessagingCenter.Subscribe<ListAggregationViewModel, User>(this, "New Data", (sender, arg) =>
+
+
+            _messenger.Register<NewDataMessage>(this, (r, m) =>
             {
+
                 try
                 {
-                    GetNewDataFromUser(arg);
+                    GetNewDataFromUser(m.User);
                 }
                 catch (ArgumentNullException ex)
                 {
@@ -228,8 +236,8 @@ namespace Test_MauiApp1.ViewModels
                     });
                 }
                 if (IsBusy) IsBusy = false;
-
             });
+                               
 
             GetNewDataFromUser(_stateService.StateInfo.User);
 
@@ -337,9 +345,7 @@ namespace Test_MauiApp1.ViewModels
 
         protected override async Task OnDisappearingAsync()
         {
-
-            MessagingCenter.Unsubscribe<ListAggregationViewModel, User>(this, "New Data");
-
+            //_messenger.Unregister<NewDataMessage>(this); // ???? maybe not necessary?
         }
 
         public ICommand LoadItemsCommand
@@ -348,7 +354,7 @@ namespace Test_MauiApp1.ViewModels
             {
                 return new Command(() =>
                {
-                   MessagingCenter.Send(this, "Request for New Data");
+                   _messenger.Send(new RequestForNewDataMessage());
 
                });
 
