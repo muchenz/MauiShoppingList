@@ -424,7 +424,7 @@ namespace Test_MauiApp1.ViewModels
             try
             {
                 (_listDisposable, _hubConnection) = await HubConnectionHelper.EstablishSignalRConnectionAsync(this, _configuration,
-                    RequestForNewData, _listItemService, SetInvitaionNewIndicator, _stateService);
+                    RequestForNewData, _listItemService, SetInvitaionNewIndicator, _stateService, _messenger);
 
                 _stateService.StateInfo.ClientSignalRID = _hubConnection.ConnectionId;
 
