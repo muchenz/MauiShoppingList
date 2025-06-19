@@ -16,7 +16,7 @@ namespace Test_MauiApp1.ViewModels
     {
         private readonly UserService _userService;
         private readonly ListItemService _listItemService;
-     
+        private readonly StateService _stateService;
         string _userName;
       
 
@@ -30,14 +30,12 @@ namespace Test_MauiApp1.ViewModels
                 SetProperty(ref _selectedItem, value);
             }
         }
-        public PermissionsViewModel(UserService userService, ListItemService listItemService)
+        public PermissionsViewModel(UserService userService, ListItemService listItemService, StateService stateService)
         {
-            _userName = App.UserName;
+            _stateService = stateService;
+            _userName = stateService.StateInfo.UserName;
             _userService = userService;
-            _listItemService = listItemService; 
-
-          
-
+            _listItemService = listItemService;
             base.InitAsyncCommand.Execute(null);
 
         }

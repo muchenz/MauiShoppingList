@@ -17,6 +17,7 @@ namespace Test_MauiApp1.ViewModels
     public class RegistrationViewModel: BaseViewModel
     {
         private readonly UserService _userService;
+        private readonly StateService _stateService;
 
         public ICommand RegistrationCommand { get; set; }
 
@@ -24,9 +25,10 @@ namespace Test_MauiApp1.ViewModels
       
         //public RegistrationModelError ModelError { get; set; } 
 
-        public RegistrationViewModel(UserService userService)
+        public RegistrationViewModel(UserService userService, StateService stateService)
         {
             _userService = userService;
+            _stateService = stateService;
             RegistrationCommand = new Command(async () => await Registration(), ()=>Model.IsValid);
 
             //ModelError = new RegistrationModelError(Model);
@@ -65,9 +67,9 @@ namespace Test_MauiApp1.ViewModels
                 }
                 else
                 {
-                    App.UserName = Model.UserName;
+                    _stateService.StateInfo.UserName = Model.UserName;
 
-                    App.Token = response.Data;
+                    _stateService.StateInfo.Token = response.Data;
 
 
                     Preferences.Default.Set("UserName", Model.UserName);

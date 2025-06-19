@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Test_MauiApp1;
 using Test_MauiApp1.Models;
+using Test_MauiApp1.Services;
 
 namespace Test_MauiApp1.Helpers
 {
@@ -10,13 +11,13 @@ namespace Test_MauiApp1.Helpers
         /// ////////////////////////////////////////
         /// </summary>
         /// <returns></returns>
-        public static void LoadListAggregatorsOrder()
+        public static void LoadListAggregatorsOrder(StateService stateService)
         {
            
-            if (App.User == null || App.User.ListAggregators == null || !App.User.ListAggregators.Any()) return;
+            if (stateService.StateInfo.User == null || stateService.StateInfo.User.ListAggregators == null || !stateService.StateInfo.User.ListAggregators.Any()) return;
 
 
-            SetEntryOrder2(App.User.ListAggregators);
+            SetEntryOrder2(stateService.StateInfo.User.ListAggregators);
 
             string UserName = "";
             if (Preferences.Default.ContainsKey("UserName"))
@@ -24,7 +25,7 @@ namespace Test_MauiApp1.Helpers
 
             if (!Preferences.Default.ContainsKey($"{UserName}ListOrder"))
             {
-                SaveAllOrder(App.User.ListAggregators);
+                SaveAllOrder(stateService.StateInfo.User.ListAggregators);
             }
             List<OrderListAggrItem> tempListFromFile = null;
 
@@ -41,7 +42,7 @@ namespace Test_MauiApp1.Helpers
             // if (tempListFromFile == null) return;  //????????????????? nie
 
 
-            foreach (var listAggr in App.User.ListAggregators)
+            foreach (var listAggr in stateService.StateInfo.User.ListAggregators)
             {
 
                 var itemAggrFromFile = tempListFromFile?.Where(a => a.Id == listAggr.ListAggregatorId).FirstOrDefault();
@@ -102,10 +103,10 @@ namespace Test_MauiApp1.Helpers
             }
 
 
-            ResolveDoubleOrderValue(App.User.ListAggregators);
+            ResolveDoubleOrderValue(stateService.StateInfo.User.ListAggregators);
 
 
-            App.User.ListAggregators = App.User.ListAggregators.OrderByDescending(a => a.Order).ToList();
+            stateService.StateInfo.User.ListAggregators = stateService.StateInfo.User.ListAggregators.OrderByDescending(a => a.Order).ToList();
 
         }
               

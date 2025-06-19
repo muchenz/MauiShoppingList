@@ -15,13 +15,10 @@ public partial class App : Application
 {
 
     public static UnityContainer Container { get; set; }
-    public static string Token { get; set; }
-    public static string SinalRId { get; set; }
-    public static string FacebookToken { get; set; }
-    public static string UserName { get; set; }
-    //public static string Password { get; set; }
-    public static User User { get; set; }
-    public static ObservableCollection<ListAggregator> Data { get; set; }
+    //public static string Token { get; set; }
+    //public static string SinalRId { get; set; }
+    //public static string UserName { get; set; }
+    //public static User User { get; set; }
     public App()
     {
 
@@ -60,6 +57,7 @@ public partial class App : Application
         App.Container.RegisterType<ListViewModel>();
         App.Container.RegisterType<ListPage>();
         App.Container.RegisterType<ListViewModel>();
+        App.Container.RegisterType<ListItemViewModel>();
         //App.Container.RegisterType<RegistrationPage>();
         //App.Container.RegisterType<RegistrationViewModel>();
         //App.Container.RegisterType<PermissionsPage>();
@@ -92,6 +90,8 @@ public partial class App : Application
         App.Container.RegisterFactory<IConfiguration>((c) => configuration, FactoryLifetime.Singleton);
         //App.Container.RegisterSingleton<IConfiguration, Helpers.Configuration.Configuration>();
 
+        //var stateService = new StateService();
+        App.Container.RegisterFactory<StateService>((_)=> new StateService() , FactoryLifetime.Singleton);
 
     }
 
@@ -148,15 +148,18 @@ public partial class App : Application
 }
 public class AuthHeaderHandler : DelegatingHandler
 {
+    private readonly StateService _stateService;
+
     //private readonly ITokenService _tokenService;
 
-    public AuthHeaderHandler()
+    public AuthHeaderHandler(StateService stateService)
     {
         //_tokenService = tokenService;
         HttpClientHandler handler = new HttpClientHandler();
         handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
 
         InnerHandler = handler;
+        _stateService = stateService;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -164,15 +167,15 @@ public class AuthHeaderHandler : DelegatingHandler
 
         // var token = await _tokenService.GetAccessTokenAsync(); // lub .GetAccessToken() jeśli synchroniczne
 
-        if (!string.IsNullOrEmpty(App.Token))
+        if (!string.IsNullOrEmpty(_stateService.StateInfo.Token))
         {
-            var token = App.Token;
+            var token = _stateService.StateInfo.Token;
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
-        if (!string.IsNullOrEmpty(App.SinalRId))
+        if (!string.IsNullOrEmpty(_stateService.StateInfo.ClientSignalRID))
         {
-            request.Headers.Add("SignalRId", App.SinalRId);
+            request.Headers.Add("SignalRId", _stateService.StateInfo.ClientSignalRID);
         }
 
         request.Headers.Add("User-Agent", "BlazorServer");

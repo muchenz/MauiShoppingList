@@ -20,20 +20,21 @@ namespace Test_MauiApp1.ViewModels
         private readonly UserService _userService;
         private readonly ListItemService _listItemService;
         private readonly ListAggregator _listAggregator;
+        private readonly StateService _stateService;
         string userName;
         List _addListModel = new List();
         public List AddListModel { get { return _addListModel; } set { SetProperty(ref _addListModel, value); } } 
 
         List _selectedItem;
         public List SelectedItem { get { return _selectedItem; } set { SetProperty(ref _selectedItem, value); } }
-        public ListViewModel(UserService userService, ListItemService listItemService, ListAggregator listAggregator)
+        public ListViewModel(UserService userService, ListItemService listItemService, ListAggregator listAggregator, StateService stateService)
         {
-            userName = App.UserName;
+            userName = stateService.StateInfo.UserName;
             _userService = userService;
             _listItemService = listItemService;
             _listAggregator = listAggregator;
-
-            GetNewData(App.User);
+            _stateService = stateService;
+            GetNewData(_stateService.StateInfo.User);
 
             base.InitAsyncCommand.Execute(null);
 
@@ -258,7 +259,7 @@ namespace Test_MauiApp1.ViewModels
                 if (IsBusy) IsBusy = false;
             });
 
-            GetNewData(App.User);
+            GetNewData(_stateService.StateInfo.User);
 
         }
 

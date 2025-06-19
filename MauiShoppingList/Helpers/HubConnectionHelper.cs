@@ -15,14 +15,14 @@ namespace Test_MauiApp1.Helpers
 {
     public class HubConnectionHelper
     {
-        public static async Task<(List<IDisposable>, HubConnection)> EstablishSignalRConnectionAsync(string token, ListAggregationViewModel vm,
+        public static async Task<(List<IDisposable>, HubConnection)> EstablishSignalRConnectionAsync(ListAggregationViewModel vm,
             IConfiguration configuration, Func<Task<User>> RequestForNewData, ListItemService listItemService,
-            Func<Task> SetInvitaionNewIndicator)
+            Func<Task> SetInvitaionNewIndicator, StateService stateService)
         {
             var signalRAddress = configuration.GetSection("AppSettings")["SignlRAddress"];
             HubConnection hubConnection = new HubConnectionBuilder().WithUrl(signalRAddress, (opts) =>
             {
-                opts.Headers.Add("Access_Token", token);
+                opts.Headers.Add("Access_Token", stateService.StateInfo.Token);
 
                 opts.HttpMessageHandlerFactory = (message) =>
                 {
@@ -36,11 +36,11 @@ namespace Test_MauiApp1.Helpers
 
             hubConnection.Reconnected += (connectionId) =>
             {
-                App.SinalRId = connectionId;
+                stateService.StateInfo.ClientSignalRID = connectionId;
                 return Task.CompletedTask;
             };
 
-            var dataAreChangeDispose = hubConnection.On("DataAreChanged_" + App.User.UserId,
+            var dataAreChangeDispose = hubConnection.On("DataAreChanged_" + stateService.StateInfo.User.UserId,
                 async () =>
             {
                 var data = await RequestForNewData();
@@ -50,7 +50,7 @@ namespace Test_MauiApp1.Helpers
                 return;
             });
 
-            var listItemArechangeDispose = hubConnection.On("ListItemAreChanged_" + App.User.UserId,
+            var listItemArechangeDispose = hubConnection.On("ListItemAreChanged_" + stateService.StateInfo.User.UserId,
                 async (string signaREnvelope) =>
                 {
 
@@ -70,7 +70,7 @@ namespace Test_MauiApp1.Helpers
                             {
                                 var item = await listItemService.GetItem<ListItem>(listItemId, listAggregationId);
 
-                                var lists = App.User.ListAggregators.Where(a => a.ListAggregatorId == listAggregationId).FirstOrDefault();
+                                var lists = stateService.StateInfo.User.ListAggregators.Where(a => a.ListAggregatorId == listAggregationId).FirstOrDefault();
 
                                 ListItem foundListItem = null;
                                 foreach (var listItem in lists.Lists)
@@ -89,20 +89,20 @@ namespace Test_MauiApp1.Helpers
                                 var item = await listItemService.GetItem<ListItem>(listItemId, listAggregationId);
 
 
-                                var tempList = App.User.ListAggregators.Where(a => a.ListAggregatorId == listAggregationId).FirstOrDefault().
+                                var tempList = stateService.StateInfo.User.ListAggregators.Where(a => a.ListAggregatorId == listAggregationId).FirstOrDefault().
                                          Lists.Where(a => a.ListId == addSignalREvent.ListId).FirstOrDefault().ListItems;
 
                                 if (!tempList.Where(a => a.Id == item.Id).Any())
                                 {
                                     tempList.Insert(0, item);
                                 }
-                                MessagingCenter.Send<ListAggregationViewModel, User>(vm, "New Data", App.User);
+                                MessagingCenter.Send<ListAggregationViewModel, User>(vm, "New Data", stateService.StateInfo.User);
                                 break;
                             }
                         case SiganalREventName.ListItemDeleted:
                             {
 
-                                var lists = App.User.ListAggregators.Where(a => a.ListAggregatorId == listAggregationId).FirstOrDefault();
+                                var lists = stateService.StateInfo.User.ListAggregators.Where(a => a.ListAggregatorId == listAggregationId).FirstOrDefault();
 
                                 ListItem foundListItem = null;
                                 List founfList = null;
@@ -116,7 +116,7 @@ namespace Test_MauiApp1.Helpers
 
                                 founfList.ListItems.Remove(foundListItem);
 
-                                MessagingCenter.Send<ListAggregationViewModel, User>(vm, "New Data", App.User);
+                                MessagingCenter.Send<ListAggregationViewModel, User>(vm, "New Data", stateService.StateInfo.User);
                                 break;
                             }
                         default:
@@ -138,7 +138,7 @@ namespace Test_MauiApp1.Helpers
                     }
                 });
 
-            var newInvitationDispose = hubConnection.On("InvitationAreChanged_" + App.User.UserId, async () =>
+            var newInvitationDispose = hubConnection.On("InvitationAreChanged_" + stateService.StateInfo.User.UserId, async () =>
             {
 
                 await SetInvitaionNewIndicator();

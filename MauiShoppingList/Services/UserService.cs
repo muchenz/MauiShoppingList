@@ -19,8 +19,9 @@ namespace Test_MauiApp1.Services
 
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
+        private readonly StateService _stateService;
 
-        public UserService(HttpClient httpClient, IConfiguration configuration)
+        public UserService(HttpClient httpClient, IConfiguration configuration, StateService stateService)
         {
             _httpClient = httpClient;
 
@@ -40,6 +41,7 @@ namespace Test_MauiApp1.Services
             // _httpClient.DefaultRequestHeaders.Add("User-Agent", "BlazorServer");
             //----------------------
             _configuration = configuration;
+            _stateService = stateService;
         }
 
 
@@ -312,7 +314,7 @@ namespace Test_MauiApp1.Services
 
         void SetRequestAuthorizationLevelHeader(HttpRequestMessage httpRequestMessage, int listAggregationId)
         {
-            var token = App.Token;
+            var token = _stateService.StateInfo.Token;
 
             if (token != null)
             {

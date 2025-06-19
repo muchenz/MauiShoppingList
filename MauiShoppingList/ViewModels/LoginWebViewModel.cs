@@ -15,7 +15,7 @@ namespace Test_MauiApp1.ViewModels
     {
 
         string facbookUrl = "";
-        public LoginWebViewModel(UserService userService)
+        public LoginWebViewModel(UserService userService, StateService stateService)
         {
             WebUrl = "https://www.facebook.com/v10.0/dialog/oauth?client_id=259675572518658"
                     + "&response_type=token"
@@ -23,6 +23,7 @@ namespace Test_MauiApp1.ViewModels
                     + "&state=st=state123abc,ds=123456789&scope=public_profile,email";
 
             _userService = userService;
+            _stateService = stateService;
         }
 
 
@@ -30,6 +31,7 @@ namespace Test_MauiApp1.ViewModels
 
         string _webUrl;
         private readonly UserService _userService;
+        private readonly StateService _stateService;
 
         public string WebUrl { get { return _webUrl; } set { SetProperty(ref _webUrl, value); } }
 
@@ -40,9 +42,9 @@ namespace Test_MauiApp1.ViewModels
             if (response.IsError == false)
             {
 
-                App.UserName = response.Data.Email;
-                App.Token = response.Data.Token;
-                App.FacebookToken = accessFacebookToken;
+                _stateService.StateInfo.UserName = response.Data.Email;
+                _stateService.StateInfo.Token = response.Data.Token;
+               // App.FacebookToken = accessFacebookToken;
                 await Navigation.PushAsync(App.Container.Resolve<ListAggregationPage>());
                 if (Navigation.NavigationStack.Count > 1)
                 {

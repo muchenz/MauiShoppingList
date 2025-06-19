@@ -20,16 +20,17 @@ namespace Test_MauiApp1.ViewModels
     {        
         private readonly UserService _userService;
         private readonly IConfiguration _configuration;
+        private readonly StateService _stateService;
 
         public Command LoginCommand { get; set; }
 
         public LoginModel Model { get; set; } 
 
         
-        public LoginViewModel(UserService userService, IConfiguration configuration, string loginError=null)
+        public LoginViewModel(UserService userService, IConfiguration configuration, StateService stateService,  string loginError=null)
         {
             LoginError = loginError;
-
+            _stateService = stateService;
             _userService = userService;
             _configuration = configuration;
             LoginCommand = new Command(async () => await Login());
@@ -70,8 +71,8 @@ namespace Test_MauiApp1.ViewModels
 
                 if (!response.IsError)
                 {
-                    App.UserName = Model.UserName;
-                    App.Token = response.Data.Token;
+                    _stateService.StateInfo.UserName = Model.UserName;
+                    _stateService.StateInfo.Token = response.Data.Token;
 
                     await Navigation.PushAsync(App.Container.Resolve<ListAggregationPage>());
                 }

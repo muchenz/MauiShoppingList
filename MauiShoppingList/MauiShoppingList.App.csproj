@@ -76,6 +76,8 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Sharpnado.CollectionView.Maui" Version="3.0.0" />
 		<PackageReference Include="Unity" Version="5.11.10" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />  <!--added my me-->
+
 	</ItemGroup>
 
 	<ItemGroup>

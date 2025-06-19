@@ -23,6 +23,7 @@ namespace Test_MauiApp1.ViewModels
         private readonly ListItemService _listItemService;
         private readonly ListAggregator _listAggregator;
         private readonly List _list;
+        private readonly StateService _stateService;
         string _userName;
 
         ListItem _addListItemModel = new ListItem();
@@ -30,17 +31,15 @@ namespace Test_MauiApp1.ViewModels
 
         ListItem _selectedItem;
         public ListItem SelectedItem { get { return _selectedItem; } set { SetProperty(ref _selectedItem, value); } }
-        public ListItemViewModel(UserService userService, ListItemService listItemService, ListAggregator listAggregator, List list)
+        public ListItemViewModel(UserService userService, ListItemService listItemService,  StateService stateService,  ListAggregator listAggregator, List list)
         {
-            _userName = App.UserName;
+            _stateService = stateService;
+            _userName = stateService.StateInfo.UserName;
             _userService = userService;
             _listItemService = listItemService;
             _listAggregator = listAggregator;
             _list = list;
-
-
-
-            GetNewDataFromUser(App.User);
+            GetNewDataFromUser(_stateService.StateInfo.User);
           
             base.InitAsyncCommand.Execute(null);
 
@@ -232,7 +231,7 @@ namespace Test_MauiApp1.ViewModels
 
             });
 
-            GetNewDataFromUser(App.User);
+            GetNewDataFromUser(_stateService.StateInfo.User);
 
         }
 
@@ -325,8 +324,9 @@ namespace Test_MauiApp1.ViewModels
         void SetAndSend(ICollection<ListItem> collection)
         {
 
-            var tempListItem = App.User.ListAggregators.Where(a => a.ListAggregatorId == _listAggregator.ListAggregatorId).FirstOrDefault()
-             .Lists.Where(a => a.ListId == _list.ListId).FirstOrDefault();
+            var tempListItem = _stateService.StateInfo.User.ListAggregators
+                .Where(a => a.ListAggregatorId == _listAggregator.ListAggregatorId).FirstOrDefault()
+                .Lists.Where(a => a.ListId == _list.ListId).FirstOrDefault();
 
             tempListItem.ListItems = new List<ListItem>(collection);
             //tempListItem.ListItems = ListItems as ICollection<ListItem>;

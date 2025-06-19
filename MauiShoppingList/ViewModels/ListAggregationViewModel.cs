@@ -29,6 +29,7 @@ namespace Test_MauiApp1.ViewModels
         private readonly UserService _userService;
         private readonly ListItemService _listItemService;
         private readonly IConfiguration _configuration;
+        private readonly StateService _stateService;
         string _userName;
         ListAggregator _selectedItem;
         public ListAggregator SelectedItem { get { return _selectedItem; } set { SetProperty(ref _selectedItem, value); } }
@@ -46,12 +47,13 @@ namespace Test_MauiApp1.ViewModels
         ListAggregator _addListAggregatorModel = new ListAggregator();
         public ListAggregator AddListAggregatorModel { get { return _addListAggregatorModel; } set { SetProperty(ref _addListAggregatorModel, value); } }
 
-        public ListAggregationViewModel(UserService userService, ListItemService listItemService, IConfiguration configuration)
+        public ListAggregationViewModel(UserService userService, ListItemService listItemService, IConfiguration configuration, StateService stateService)
         {
-            _userName = App.UserName;
+            _userName = stateService.StateInfo.UserName;
             _userService = userService;
             _listItemService = listItemService;
             _configuration = configuration;
+            _stateService = stateService;
             MessagingCenter.Subscribe<ListItemViewModel>(this, "Request for New Data", async (a) =>
             {
                 var data = await RequestForNewData();
@@ -69,8 +71,8 @@ namespace Test_MauiApp1.ViewModels
 
             MessagingCenter.Subscribe<ListItemViewModel>(this, "Save And Refresh New Order", (a) =>
            {
-               LoadSaveOrderDataHelper.SaveAllOrder(App.User.ListAggregators);
-               LoadSaveOrderDataHelper.LoadListAggregatorsOrder();
+               LoadSaveOrderDataHelper.SaveAllOrder(_stateService.StateInfo.User.ListAggregators);
+               LoadSaveOrderDataHelper.LoadListAggregatorsOrder(_stateService);
            });
 
 
@@ -189,7 +191,7 @@ namespace Test_MauiApp1.ViewModels
                         {
                             AddListAggregatorModel.Order = ListAggr.Any() ? ListAggr.Max(a => a.Order) + 1 : 1;
 
-                            listAggr = await _listItemService.AddItem(App.User.UserId, AddListAggregatorModel, -1);
+                            listAggr = await _listItemService.AddItem(_stateService.StateInfo.User.UserId, AddListAggregatorModel, -1);
                         }
                         catch (WebPermissionException)
                         {
@@ -388,11 +390,11 @@ namespace Test_MauiApp1.ViewModels
             {
                 data = await _userService.GetUserDataTreeAsync();
 
-                App.User = data;
+                _stateService.StateInfo.User = data;
 
-                LoadSaveOrderDataHelper.LoadListAggregatorsOrder();
+                LoadSaveOrderDataHelper.LoadListAggregatorsOrder(_stateService);
                 ListAggr = new ObservableCollection<ListAggregator>(data.ListAggregators);
-                App.User.ListAggregators = ListAggr;
+                _stateService.StateInfo.User.ListAggregators = ListAggr;
             }
             catch (Exception ex) 
             { 
@@ -419,10 +421,10 @@ namespace Test_MauiApp1.ViewModels
 
             try
             {
-                (_listDisposable, _hubConnection) = await HubConnectionHelper.EstablishSignalRConnectionAsync(App.Token, this, _configuration,
-                    RequestForNewData, _listItemService, SetInvitaionNewIndicator);
-                
-                App.SinalRId = _hubConnection.ConnectionId;
+                (_listDisposable, _hubConnection) = await HubConnectionHelper.EstablishSignalRConnectionAsync(this, _configuration,
+                    RequestForNewData, _listItemService, SetInvitaionNewIndicator, _stateService);
+
+                _stateService.StateInfo.ClientSignalRID = _hubConnection.ConnectionId;
 
                 await SetInvitaionNewIndicator();
 
