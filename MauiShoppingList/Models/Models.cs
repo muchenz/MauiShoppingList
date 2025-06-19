@@ -24,27 +24,7 @@ namespace Test_MauiApp1.Models
     }
 
 
-    public class DisplayAlertMessageMessage : ValueChangedMessage<DisplayAlertMessage>
-    {
-        public DisplayAlertMessageMessage(DisplayAlertMessage message) : base(message)
-        {
-        }
-    }
-
-    public class DisplayAlertMessage
-    {
-        public DisplayAlertMessage()
-        {
-
-        }
-
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public string Cancel { get; set; }
-        public string Accept { get; set; }
-
-        public Action<bool> OnCompleted { get; set; }
-    }
+    
 
     public class MessageStatus
     {

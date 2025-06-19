@@ -69,7 +69,7 @@ namespace Test_MauiApp1.ViewModels
                         catch (WebPermissionException ex)
                         {
 
-                            Message.MessageDontHavePermission(Application.Current);
+                            _messenger.MessageDontHavePermission();
                             tempeditListItem.Name = tempName;
 
                         }
@@ -90,7 +90,7 @@ namespace Test_MauiApp1.ViewModels
                         }
                         catch (WebPermissionException ex)
                         {
-                            Message.MessageDontHavePermission(Application.Current);
+                            _messenger.MessageDontHavePermission();
 
                         }
                         catch (Exception ex)
@@ -157,7 +157,7 @@ namespace Test_MauiApp1.ViewModels
             get
             {
                 return new Command(() => {
-                    var message = new DisplayAlertMessage();
+                    var message = new DisplayAlert();
 
 
                     message.Title = "Warning";
@@ -177,7 +177,7 @@ namespace Test_MauiApp1.ViewModels
                             }
                             catch (WebPermissionException ex)
                             {
-                                Message.MessageDontHavePermission(Application.Current);
+                                _messenger.MessageDontHavePermission();
 
                             }
                             catch
@@ -186,7 +186,7 @@ namespace Test_MauiApp1.ViewModels
                             }
                         }
                     };
-                    MessagingCenter.Send<Application, DisplayAlertMessage>(Application.Current, "ShowAlert", message);
+                    _messenger.Send(new DisplayAlertMessage(message));
 
                 });
 

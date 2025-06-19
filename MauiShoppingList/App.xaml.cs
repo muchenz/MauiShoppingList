@@ -6,6 +6,7 @@ using System.Security.Permissions;
 using Test_MauiApp1.Models;
 using Test_MauiApp1.Services;
 using Test_MauiApp1.ViewModels;
+using Test_MauiApp1.ViewModels.Messages;
 using Test_MauiApp1.Views;
 using Unity;
 
@@ -97,10 +98,13 @@ public partial class App : Application
 
     private void InitMessage()
     {
+        var messager = Container.Resolve<IMessenger>();
 
-        WeakReferenceMessenger.Default.Register<DisplayAlertMessageMessage>(this, async (r, m) =>
+
+        //WeakReferenceMessenger.Default.Register<DisplayAlertMessage>(this, async (r, m) =>
+        messager.Register<DisplayAlertMessage>(this, async (r, m) =>
         {
-            DisplayAlertMessage message = m.Value;
+            DisplayAlert message = m.Value;
 
             var result = true;
             if (!string.IsNullOrEmpty(message.Accept))
@@ -114,24 +118,6 @@ public partial class App : Application
                 message.OnCompleted(result);
 
         });
-
-
-        MessagingCenter.Subscribe<Application, DisplayAlertMessage>(this, "ShowAlert", async (sender, message) =>
-            {
-
-                var result = true;
-                if (!string.IsNullOrEmpty(message.Accept))
-                    result = await this.MainPage.DisplayAlert(message.Title, message.Message, message.Accept, message.Cancel);
-                else
-                {
-                    await this.MainPage.DisplayAlert(message.Title, message.Message, message.Cancel);
-                }
-
-                if (message.OnCompleted != null)
-                    message.OnCompleted(result);
-
-            }, Application.Current);
-
     }
 
     protected override void OnStart()

@@ -90,7 +90,7 @@ namespace Test_MauiApp1.ViewModels
             {
                 return new Command(() =>
                 {
-                    var message = new DisplayAlertMessage();
+                    var message = new DisplayAlert();
 
 
                     message.Title = "Warning";
@@ -109,7 +109,7 @@ namespace Test_MauiApp1.ViewModels
                             }
                             catch (WebPermissionException ex)
                             {
-                                Message.MessageDontHavePermission(Application.Current);
+                                _messenger.MessageDontHavePermission();
 
                             }
                             catch
@@ -118,7 +118,7 @@ namespace Test_MauiApp1.ViewModels
                             }
                         }
                     };
-                    MessagingCenter.Send<Application, DisplayAlertMessage>(Application.Current, "ShowAlert", message);
+                    _messenger.Send(new DisplayAlertMessage(message));
 
                 });
 
@@ -175,7 +175,7 @@ namespace Test_MauiApp1.ViewModels
                         catch (WebPermissionException)
                         {
 
-                            Message.MessageDontHavePermission(Application.Current);
+                            _messenger.MessageDontHavePermission();
                             tempSelectedItem.Name = tempName;
 
 
@@ -197,7 +197,7 @@ namespace Test_MauiApp1.ViewModels
                         }
                         catch (WebPermissionException)
                         {
-                            Message.MessageDontHavePermission(Application.Current);
+                            _messenger.MessageDontHavePermission();
                         }
                         catch { }
 
@@ -239,7 +239,7 @@ namespace Test_MauiApp1.ViewModels
                 {
 
 
-                    var message = new DisplayAlertMessage();
+                    var message = new DisplayAlert();
 
 
                     message.Title = "Logout";
@@ -267,11 +267,8 @@ namespace Test_MauiApp1.ViewModels
                             }
                         }
                     };
-                    WeakReferenceMessenger.Default.Send(new DisplayAlertMessageMessage(message));
-                    //MessagingCenter.Send<Application, DisplayAlertMessage>(Application.Current, "ShowAlert", message);
-
-
-
+                    _messenger.Send(new DisplayAlertMessage(message));
+                    //WeakReferenceMessenger.Default.Send(new DisplayAlertMessage(message));
 
                     IsBusy = false;
 

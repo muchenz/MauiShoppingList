@@ -9,6 +9,9 @@ using Microsoft.Maui;
 using Test_MauiApp1.ViewModels;
 using Test_MauiApp1.Models;
 using Test_MauiApp1.Services;
+using CommunityToolkit.Mvvm.Messaging;
+using Test_MauiApp1.ViewModels.Messages;
+using Test_MauiApp1.Helpers;
 
 namespace Test_MauiApp1.ViewModels
 {
@@ -17,6 +20,7 @@ namespace Test_MauiApp1.ViewModels
         private readonly UserService _userService;
         private readonly ListItemService _listItemService;
         private readonly StateService _stateService;
+        private readonly IMessenger _messenger;
         string _userName;
       
 
@@ -30,9 +34,10 @@ namespace Test_MauiApp1.ViewModels
                 SetProperty(ref _selectedItem, value);
             }
         }
-        public PermissionsViewModel(UserService userService, ListItemService listItemService, StateService stateService)
+        public PermissionsViewModel(UserService userService, ListItemService listItemService, StateService stateService, IMessenger messenger)
         {
             _stateService = stateService;
+            _messenger = messenger;
             _userName = stateService.StateInfo.UserName;
             _userService = userService;
             _listItemService = listItemService;
@@ -91,7 +96,7 @@ namespace Test_MauiApp1.ViewModels
         {
             if (SelectedItem == null)
             {
-                Helpers.Message.SimpleMessage(App.Current, "Choose list");
+                _messenger.SimpleInformationMessage("Choose list");
                 return;
             }
            // InvitationNew.Name = SelectedItem.ListAggregatorEntity.Name;
@@ -108,7 +113,7 @@ namespace Test_MauiApp1.ViewModels
 
             if (messageAndStatus == null || string.IsNullOrEmpty(messageAndStatus.Message)) return;
 
-            Helpers.Message.SimpleMessage(App.Current, messageAndStatus.Message);
+            _messenger.SimpleInformationMessage(messageAndStatus.Message);
 
 
         });
@@ -143,7 +148,7 @@ namespace Test_MauiApp1.ViewModels
                 return new Command<UserPermissionToListAggregation>(async (item) =>
                 {
                   
-                    var message = new DisplayAlertMessage();
+                    var message = new DisplayAlert();
                     MessageAndStatus messageAndStatus;
                     UserPermissionToListAggregation tempUserPermToListAggregation = item;
                     if (item.Name == _userName)
@@ -165,7 +170,7 @@ namespace Test_MauiApp1.ViewModels
 
                                     if (string.IsNullOrEmpty(messageAndStatus.Message)) return;
 
-                                    Helpers.Message.SimpleMessage(App.Current, messageAndStatus.Message);
+                                    _messenger.SimpleInformationMessage(messageAndStatus.Message);
                                 }
                                 catch
                                 {
@@ -175,7 +180,7 @@ namespace Test_MauiApp1.ViewModels
                             }
                         };
 
-                        MessagingCenter.Send<Application, DisplayAlertMessage>(Application.Current, "ShowAlert", message);
+                        _messenger.Send(new DisplayAlertMessage(message));
                                                 
                     }
                     else
@@ -189,7 +194,7 @@ namespace Test_MauiApp1.ViewModels
 
                             if (string.IsNullOrEmpty(messageAndStatus.Message)) return;
 
-                            Helpers.Message.SimpleMessage(App.Current, messageAndStatus.Message);
+                            _messenger.SimpleInformationMessage(messageAndStatus.Message);
 
                         }
                         catch
@@ -214,7 +219,7 @@ namespace Test_MauiApp1.ViewModels
                 return new Command<UserPermissionToListAggregation>((item) =>
                 {                   
 
-                    var message = new DisplayAlertMessage();
+                    var message = new DisplayAlert();
                     MessageAndStatus messageAndStatus;
 
                     if (item.Name == _userName)
@@ -235,7 +240,7 @@ namespace Test_MauiApp1.ViewModels
 
                                     if (string.IsNullOrEmpty(messageAndStatus.Message)) return;
 
-                                    Helpers.Message.SimpleMessage(App.Current, messageAndStatus.Message);
+                                    _messenger.SimpleInformationMessage(messageAndStatus.Message);
                                 } 
                                 catch
                                 { 
@@ -243,8 +248,7 @@ namespace Test_MauiApp1.ViewModels
                             }
                         };
 
-                        MessagingCenter.Send<Application, DisplayAlertMessage>(Application.Current, "ShowAlert", message);
-
+                        _messenger.Send(new DisplayAlertMessage(message));
 
                     }
                     else
@@ -267,7 +271,7 @@ namespace Test_MauiApp1.ViewModels
 
                                     if (string.IsNullOrEmpty(messageAndStatus.Message)) return;
 
-                                    Helpers.Message.SimpleMessage(App.Current, messageAndStatus.Message);
+                                    _messenger.SimpleInformationMessage(messageAndStatus.Message);
                                 }
                                 catch
                                 {
@@ -276,7 +280,7 @@ namespace Test_MauiApp1.ViewModels
                            }    
                         };
 
-                        MessagingCenter.Send<Application, DisplayAlertMessage>(Application.Current, "ShowAlert", message);
+                        _messenger.Send(new DisplayAlertMessage(message));
                     }
 
 
