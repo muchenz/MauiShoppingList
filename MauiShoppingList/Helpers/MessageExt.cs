@@ -12,7 +12,7 @@ namespace Test_MauiApp1.Helpers
     public static class MessageExt
     {
 
-        public static void MessageDontHavePermission(this IMessenger messager)
+        public static void DontHavePermissionMessage(this IMessenger messager)
         {
             var message = new DisplayAlert();
             message.Title = "Message";

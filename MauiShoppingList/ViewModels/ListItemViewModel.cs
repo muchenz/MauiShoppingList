@@ -69,7 +69,7 @@ namespace Test_MauiApp1.ViewModels
                         catch (WebPermissionException ex)
                         {
 
-                            _messenger.MessageDontHavePermission();
+                            _messenger.DontHavePermissionMessage();
                             tempeditListItem.Name = tempName;
 
                         }
@@ -90,7 +90,7 @@ namespace Test_MauiApp1.ViewModels
                         }
                         catch (WebPermissionException ex)
                         {
-                            _messenger.MessageDontHavePermission();
+                            _messenger.DontHavePermissionMessage();
 
                         }
                         catch (Exception ex)
@@ -177,7 +177,7 @@ namespace Test_MauiApp1.ViewModels
                             }
                             catch (WebPermissionException ex)
                             {
-                                _messenger.MessageDontHavePermission();
+                                _messenger.DontHavePermissionMessage();
 
                             }
                             catch
@@ -345,7 +345,7 @@ namespace Test_MauiApp1.ViewModels
 
         protected override async Task OnDisappearingAsync()
         {
-            //_messenger.Unregister<NewDataMessage>(this); // ???? maybe not necessary?
+            _messenger.Unregister<NewDataMessage>(this); // ???? maybe not necessary?
         }
 
         public ICommand LoadItemsCommand

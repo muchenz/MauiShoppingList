@@ -109,7 +109,7 @@ namespace Test_MauiApp1.ViewModels
                             }
                             catch (WebPermissionException ex)
                             {
-                                _messenger.MessageDontHavePermission();
+                                _messenger.DontHavePermissionMessage();
 
                             }
                             catch
@@ -175,7 +175,7 @@ namespace Test_MauiApp1.ViewModels
                         catch (WebPermissionException)
                         {
 
-                            _messenger.MessageDontHavePermission();
+                            _messenger.DontHavePermissionMessage();
                             tempSelectedItem.Name = tempName;
 
 
@@ -197,7 +197,7 @@ namespace Test_MauiApp1.ViewModels
                         }
                         catch (WebPermissionException)
                         {
-                            _messenger.MessageDontHavePermission();
+                            _messenger.DontHavePermissionMessage();
                         }
                         catch { }
 

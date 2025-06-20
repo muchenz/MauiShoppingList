@@ -77,7 +77,7 @@ namespace Test_MauiApp1.ViewModels
                             }
                             catch (WebPermissionException ex)
                             {
-                                _messenger.MessageDontHavePermission();
+                                _messenger.DontHavePermissionMessage();
 
                             }
                             catch
@@ -140,7 +140,7 @@ namespace Test_MauiApp1.ViewModels
                         }
                         catch (WebPermissionException ex)
                         {
-                            _messenger.MessageDontHavePermission();
+                            _messenger.DontHavePermissionMessage();
                             temSelectedItem.Name = tempName;
 
                         }
@@ -162,7 +162,7 @@ namespace Test_MauiApp1.ViewModels
                         }
                         catch (WebPermissionException ex)
                         {
-                            _messenger.MessageDontHavePermission();
+                            _messenger.DontHavePermissionMessage();
 
                         }
                         catch
@@ -274,7 +274,7 @@ namespace Test_MauiApp1.ViewModels
         {
 
 
-            // _messenger.Unregister<NewDataMessage>(this); // ???? maybe not necessary?
+             _messenger.Unregister<NewDataMessage>(this); // ???? maybe not necessary?
         }
 
         public ICommand LoadItemsCommand => new Command(()=> _messenger.Send(new RequestForNewDataMessage()));

@@ -9,7 +9,7 @@ namespace Test_MauiApp1.Services
 {
     public class StateService
     {
-        public StateInfo StateInfo { get; set; } = new StateInfo();
+        public  StateInfo StateInfo { get;  } = new StateInfo();
 
     }
 
