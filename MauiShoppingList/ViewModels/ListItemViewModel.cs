@@ -338,9 +338,10 @@ namespace Test_MauiApp1.ViewModels
 
             tempListItem.ListItems = new List<ListItem>(collection);
             //tempListItem.ListItems = ListItems as ICollection<ListItem>;
-                
 
-            MessagingCenter.Send(this, "Save And Refresh New Order");
+
+            //MessagingCenter.Send(this, "Save And Refresh New Order");
+            _messenger.Send(new SaveAndRefreshNewOrderMessage());
         }
 
         protected override async Task OnDisappearingAsync()

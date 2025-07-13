@@ -69,14 +69,11 @@ namespace Test_MauiApp1.ViewModels
 
             });
 
-            
-
-            MessagingCenter.Subscribe<ListItemViewModel>(this, "Save And Refresh New Order", (a) =>
-           {
-               LoadSaveOrderDataHelper.SaveAllOrder(_stateService.StateInfo.User.ListAggregators);
-               LoadSaveOrderDataHelper.LoadListAggregatorsOrder(_stateService);
-           });
-
+            _messenger.Register<SaveAndRefreshNewOrderMessage>(this,  (r, m) =>
+            {
+                LoadSaveOrderDataHelper.SaveAllOrder(_stateService.StateInfo.User.ListAggregators);
+                LoadSaveOrderDataHelper.LoadListAggregatorsOrder(_stateService);
+            });
 
             base.InitAsyncCommand.Execute(null);
         }
