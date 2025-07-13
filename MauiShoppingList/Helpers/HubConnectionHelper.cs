@@ -45,9 +45,10 @@ namespace Test_MauiApp1.Helpers
             var dataAreChangeDispose = hubConnection.On("DataAreChanged_" + stateService.StateInfo.User.UserId,
                 async () =>
             {
-                var data = await RequestForNewData();
+                //var data = await RequestForNewData();
 
-                messenger.Send(new NewDataMessage { User=data});
+                //messenger.Send(new NewDataMessage { User=data});
+                messenger.Send(new RequestForNewDataMessage());
                 return;
             });
 
