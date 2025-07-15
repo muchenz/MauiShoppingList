@@ -18,7 +18,7 @@ namespace Test_MauiApp1.Helpers
     public class HubConnectionHelper
     {
         public static async Task<(List<IDisposable>, HubConnection)> EstablishSignalRConnectionAsync(
-            IConfiguration configuration, Func<Task<User>> RequestForNewData, ListItemService listItemService,
+            IConfiguration configuration, ListItemService listItemService,
             Func<Task> SetInvitaionNewIndicator, StateService stateService, IMessenger messenger)
         {
             var signalRAddress = configuration.GetSection("AppSettings")["SignlRAddress"];

@@ -32,6 +32,7 @@ namespace Test_MauiApp1.ViewModels
         private readonly IConfiguration _configuration;
         private readonly StateService _stateService;
         private readonly IMessenger _messenger;
+        private readonly SignalRService _signalRService;
         string _userName;
         ListAggregator _selectedItem;
         public ListAggregator SelectedItem { get { return _selectedItem; } set { SetProperty(ref _selectedItem, value); } }
@@ -50,7 +51,7 @@ namespace Test_MauiApp1.ViewModels
         public ListAggregator AddListAggregatorModel { get { return _addListAggregatorModel; } set { SetProperty(ref _addListAggregatorModel, value); } }
 
         public ListAggregationViewModel(UserService userService, ListItemService listItemService, IConfiguration configuration,
-            StateService stateService, IMessenger messenger)
+            StateService stateService, IMessenger messenger, SignalRService signalRService)
         {
             _userName = stateService.StateInfo.UserName;
             _userService = userService;
@@ -58,8 +59,7 @@ namespace Test_MauiApp1.ViewModels
             _configuration = configuration;
             _stateService = stateService;
             _messenger = messenger;
-
-
+            _signalRService = signalRService;
             _messenger.Register<RequestForNewDataMessage>(this, async  (r, m) =>
             {
 
@@ -417,10 +417,14 @@ namespace Test_MauiApp1.ViewModels
 
             try
             {
-                (_listDisposable, _hubConnection) = await HubConnectionHelper.EstablishSignalRConnectionAsync(_configuration,
-                    RequestForNewData, _listItemService, SetInvitaionNewIndicator, _stateService, _messenger);
+                //(_listDisposable, _hubConnection) = await HubConnectionHelper.EstablishSignalRConnectionAsync(_configuration,
+                //    _listItemService, SetInvitaionNewIndicator, _stateService, _messenger);
 
-                _stateService.StateInfo.ClientSignalRID = _hubConnection.ConnectionId;
+                //_stateService.StateInfo.ClientSignalRID = _hubConnection.ConnectionId;
+
+
+
+                await SetSignalR();
 
                 await SetInvitaionNewIndicator();
 
@@ -432,7 +436,18 @@ namespace Test_MauiApp1.ViewModels
 
             }
         }
+        async Task   SetSignalR()
+        {
+            await _signalRService.StartConnectionAsync();
 
+            //TODO: add dispose !!
+
+            _signalRService.RegisterDataAreChangedHandlers(() => SignalRHandlers.SignalRGetUserDataTreeAsync(_messenger));
+            _signalRService.RegisterInvitationAreChanedHandlers(() => SignalRHandlers.SignalRInvitationInitAsync(SetInvitaionNewIndicator));
+            _signalRService.RegisterListItemAreChangedHandlers((envelope) =>
+                SignalRHandlers.SignalRListItemAreChangedAsync(envelope, _stateService, _messenger, _listItemService));
+            
+        }
         async Task SetInvitaionNewIndicator()
         {
             var invList = await _userService.GetInvitationsListAsync();

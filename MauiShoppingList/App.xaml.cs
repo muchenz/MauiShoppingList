@@ -94,6 +94,7 @@ public partial class App : Application
         //var stateService = new StateService();
         App.Container.RegisterFactory<StateService>((_)=> new StateService() , FactoryLifetime.Singleton);
         App.Container.RegisterFactory<IMessenger> ((_)=> new  WeakReferenceMessenger(), FactoryLifetime.Singleton);
+        App.Container.RegisterSingleton<SignalRService>();
     }
 
     private void InitMessage()
