@@ -47,13 +47,16 @@ namespace Test_MauiApp1.ViewModels
             Model.PropertyChanged += LoginViewModel_PropertyChanged;
         }
 
-        protected override Task InitAsync()
+
+        protected override async  Task OnAppearingAsync()
+        {
+           
+        }
+
+        protected override async Task InitAsync()
         {
 
-
-
-
-            return base.InitAsync();
+                                             
         }
 
         private void LoginViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

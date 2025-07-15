@@ -29,6 +29,9 @@ public class LoginService
             _stateService.StateInfo.UserName = Preferences.Default.Get("UserName", "");
             _stateService.StateInfo.Token = Preferences.Default.Get("Token", "");
 
+            var a = _stateService.StateInfo.Token;
+            var b = _stateService.StateInfo.UserName;
+
             return true;           
         }
                         

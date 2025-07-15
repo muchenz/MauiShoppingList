@@ -14,7 +14,7 @@ public partial class LoginPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        ((ListItemViewModel)BindingContext).OnAppearingAsyncCommand.Execute(null);
+        ((LoginViewModel)BindingContext).OnAppearingAsyncCommand.Execute(null);
 
 
         if (Preferences.Default.ContainsKey("UserName"))
@@ -31,6 +31,6 @@ public partial class LoginPage : ContentPage
     {
         base.OnDisappearing();
 
-        ((ListItemViewModel)BindingContext).OnDisappearingAsyncCommand.Execute(null);
+        ((LoginViewModel)BindingContext).OnDisappearingAsyncCommand.Execute(null);
     }
 }

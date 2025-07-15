@@ -29,11 +29,24 @@ public partial class App : Application
         InitContainer();
         InitMessage();
 
-        MainPage = new NavigationPage(App.Container.Resolve<LoginPage>())
+
+        if (App.Container.Resolve<LoginService>().TryToLogin())
         {
-            BarBackgroundColor = Colors.WhiteSmoke,
-            BarTextColor = Colors.Black //color of arrow in ToolbarItem
-        };
+            MainPage = new NavigationPage(App.Container.Resolve<ListAggregationPage>())
+            {
+                BarBackgroundColor = Colors.WhiteSmoke,
+                BarTextColor = Colors.Black //color of arrow in ToolbarItem
+            };
+        }
+        else
+        {
+            MainPage = new NavigationPage(App.Container.Resolve<LoginPage>())
+            {
+                BarBackgroundColor = Colors.WhiteSmoke,
+                BarTextColor = Colors.Black //color of arrow in ToolbarItem
+            };
+        }
+
 
         App.MMainPage = (NavigationPage)MainPage;
     }
