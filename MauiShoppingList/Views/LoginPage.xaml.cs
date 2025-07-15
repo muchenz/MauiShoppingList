@@ -14,10 +14,23 @@ public partial class LoginPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        ((ListItemViewModel)BindingContext).OnAppearingAsyncCommand.Execute(null);
+
 
         if (Preferences.Default.ContainsKey("UserName"))
             ((LoginViewModel)BindingContext).Model.UserName = Preferences.Default.Get("UserName","");
         if (Preferences.Default.ContainsKey("Password"))
             ((LoginViewModel)BindingContext).Model.Password = Preferences.Default.Get("Password","");
+
+
+    }
+
+   
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        ((ListItemViewModel)BindingContext).OnDisappearingAsyncCommand.Execute(null);
     }
 }

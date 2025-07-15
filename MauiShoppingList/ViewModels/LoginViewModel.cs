@@ -34,13 +34,21 @@ namespace Test_MauiApp1.ViewModels
             _userService = userService;
             _configuration = configuration;
             LoginCommand = new Command(async () => await Login());
-            
+
+            base.InitAsyncCommand.Execute(null);
+
             Model = new LoginModel();
             if (Preferences.Default.ContainsKey("UserName"))
                 Model.UserName = Preferences.Default.Get("UserName","");
             if (Preferences.Default.ContainsKey("Password"))
                 Model.Password = Preferences.Default.Get("Password","");
             Model.PropertyChanged += LoginViewModel_PropertyChanged;
+        }
+
+        protected override Task InitAsync()
+        {
+
+            return base.InitAsync();
         }
 
         private void LoginViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
