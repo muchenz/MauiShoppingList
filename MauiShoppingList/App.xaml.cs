@@ -86,6 +86,7 @@ public partial class App : Application
         }, FactoryLifetime.Singleton);
 
         App.Container.RegisterType<UserService>();
+        App.Container.RegisterType<LoginService>();
         App.Container.RegisterType<ListItemService>();
 
         App.Container.RegisterFactory<IConfiguration>((c) => configuration, FactoryLifetime.Singleton);

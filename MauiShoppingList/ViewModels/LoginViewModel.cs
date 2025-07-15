@@ -21,16 +21,18 @@ namespace Test_MauiApp1.ViewModels
         private readonly UserService _userService;
         private readonly IConfiguration _configuration;
         private readonly StateService _stateService;
+        private readonly LoginService _loginService;
 
         public Command LoginCommand { get; set; }
 
         public LoginModel Model { get; set; } 
 
         
-        public LoginViewModel(UserService userService, IConfiguration configuration, StateService stateService,  string loginError=null)
+        public LoginViewModel(UserService userService, IConfiguration configuration, StateService stateService, LoginService loginService,  string loginError=null)
         {
             LoginError = loginError;
             _stateService = stateService;
+            _loginService = loginService;
             _userService = userService;
             _configuration = configuration;
             LoginCommand = new Command(async () => await Login());
@@ -47,6 +49,9 @@ namespace Test_MauiApp1.ViewModels
 
         protected override Task InitAsync()
         {
+
+
+
 
             return base.InitAsync();
         }
@@ -74,14 +79,11 @@ namespace Test_MauiApp1.ViewModels
                 LoginError = null;
                 
                 MessageAndStatusAndData<UserNameAndTokenResponse> response = 
-                    await _userService.LoginAsync(Model.UserName, Model.Password);
+                    await _loginService.LoginAsync(Model.UserName, Model.Password);
                     
 
                 if (!response.IsError)
                 {
-                    _stateService.StateInfo.UserName = Model.UserName;
-                    _stateService.StateInfo.Token = response.Data.Token;
-
                     await Navigation.PushAsync(App.Container.Resolve<ListAggregationPage>());
                 }
                 else 

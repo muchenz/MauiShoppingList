@@ -20,6 +20,21 @@ public class LoginService
     }
 
 
+    public bool TryToLogin()
+    {
+          
+
+        if (Preferences.Default.ContainsKey("UserName") && Preferences.Default.ContainsKey("Token"))
+        {
+            _stateService.StateInfo.UserName = Preferences.Default.Get("UserName", "");
+            _stateService.StateInfo.Token = Preferences.Default.Get("Token", "");
+
+            return true;           
+        }
+                        
+        return false;
+    }
+
     public async Task<MessageAndStatusAndData<UserNameAndTokenResponse>> LoginAsync(string userName, string password)
     {
 
