@@ -311,7 +311,19 @@ namespace Test_MauiApp1.Services
 
             return MessageAndStatus.Ok(message);
         }
+        public async Task<bool> VerifyToken()
+        {
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, "User/VerifyToken2");
 
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+
+            return false;
+        }
         void SetRequestAuthorizationLevelHeader(HttpRequestMessage httpRequestMessage, int listAggregationId)
         {
             var token = _stateService.StateInfo.Token;
