@@ -86,4 +86,6 @@ public class LoginService
         _stateService.StateInfo.UserName = userName;
         _stateService.StateInfo.Token = token;
     }
+
+    //TODO: logout
 }
