@@ -28,32 +28,38 @@ public partial class App : Application
 
         InitContainer();
         InitMessage();
-
-
-        if (App.Container.Resolve<LoginService>().TryToLogin())
-        {
-            MainPage = new NavigationPage(App.Container.Resolve<ListAggregationPage>())
-            {
-                BarBackgroundColor = Colors.WhiteSmoke,
-                BarTextColor = Colors.Black //color of arrow in ToolbarItem
-            };
-        }
-        else
-        {
-            MainPage = new NavigationPage(App.Container.Resolve<LoginPage>())
-            {
-                BarBackgroundColor = Colors.WhiteSmoke,
-                BarTextColor = Colors.Black //color of arrow in ToolbarItem
-            };
-        }
-
-
-        App.MMainPage = (NavigationPage)MainPage;
+        SetMainPage();
+        
+        
     }
 
-    public static NavigationPage MMainPage { get; set; }
+    private void SetMainPage()
+    {
+        
+        MainPage = new NavigationPage(App.Container.Resolve<LoginPage>())
+        {
+            BarBackgroundColor = Colors.WhiteSmoke,
+            BarTextColor = Colors.Black //color of arrow in ToolbarItem
+        };
 
 
+        Task.Run(async () =>
+        {
+            var loginService = App.Container.Resolve<LoginService>();
+            var isLogged = await loginService.TryToLoginAsync(); ;
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                if (isLogged)
+                    MainPage = new NavigationPage(App.Container.Resolve<ListAggregationPage>())
+                    {
+                        BarBackgroundColor = Colors.WhiteSmoke,
+                        BarTextColor = Colors.Black //color of arrow in ToolbarItem
+                    };
+            });
+        });
+    }
+    
     private void InitContainer()
     {
         App.Container = new UnityContainer().EnableDiagnostic();
@@ -82,13 +88,13 @@ public partial class App : Application
         App.Container.RegisterType<AuthHeaderHandler>();
         App.Container.RegisterFactory<HttpClient>(c =>
         {
-           
+
             var handler = c.Resolve<AuthHeaderHandler>();
 
             var baseAddress = configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"];
             var client = new HttpClient(handler)
             {
-               
+
                 BaseAddress = new Uri(baseAddress),
                 Timeout = TimeSpan.FromSeconds(30)
             };
@@ -106,8 +112,8 @@ public partial class App : Application
         //App.Container.RegisterSingleton<IConfiguration, Helpers.Configuration.Configuration>();
 
         //var stateService = new StateService();
-        App.Container.RegisterFactory<StateService>((_)=> new StateService() , FactoryLifetime.Singleton);
-        App.Container.RegisterFactory<IMessenger> ((_)=> new  WeakReferenceMessenger(), FactoryLifetime.Singleton);
+        App.Container.RegisterFactory<StateService>((_) => new StateService(), FactoryLifetime.Singleton);
+        App.Container.RegisterFactory<IMessenger>((_) => new WeakReferenceMessenger(), FactoryLifetime.Singleton);
         App.Container.RegisterSingleton<SignalRService>();
     }
 
@@ -180,7 +186,7 @@ public class AuthHeaderHandler : DelegatingHandler
         }
 
         request.Headers.Add("User-Agent", "BlazorServer");
-        
+
         return await base.SendAsync(request, cancellationToken);
     }
 }

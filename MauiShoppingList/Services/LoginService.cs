@@ -20,7 +20,7 @@ public class LoginService
     }
 
 
-    public async Task<bool> TryToLogin()
+    public async Task<bool> TryToLoginAsync()
     {
           
 
@@ -33,17 +33,24 @@ public class LoginService
             _stateService.StateInfo.UserName = userName;
             _stateService.StateInfo.Token = token;
 
+            var isVerified = false;
+            try
+            {
+                isVerified = await _userService.VerifyToken();
+            }
+            catch
+            {
+                isVerified = false;
+            }
 
-            if (await _userService.VerifyToken() is not true)
+          
+            if (isVerified is not true)
             {
                 Preferences.Default.Remove("Token");
                 Preferences.Default.Remove("UserName");
 
                 return false;
             }
-
-            //var a = _stateService.StateInfo.Token;
-            //var b = _stateService.StateInfo.UserName;
 
             return true;           
         }
