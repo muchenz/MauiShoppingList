@@ -46,15 +46,24 @@ public class LoginService
 
         if (response.IsSuccess)
         {
-            Preferences.Default.Set("Token", response.Data.Token);
             Preferences.Default.Set("UserName", response.Data.UserName);
+            Preferences.Default.Set("Token", response.Data.Token);
 
-            _stateService.StateInfo.UserName = response.Data.Token;
+            _stateService.StateInfo.UserName = response.Data.UserName;
             _stateService.StateInfo.Token = response.Data.Token;
         }
 
 
         return response;
 
+    }
+
+    public  void LoginByTokenAsync(string userName, string token)
+    {
+        Preferences.Default.Set("UserName", userName);
+        Preferences.Default.Set("Token", token);
+
+        _stateService.StateInfo.UserName = userName;
+        _stateService.StateInfo.Token = token;
     }
 }
