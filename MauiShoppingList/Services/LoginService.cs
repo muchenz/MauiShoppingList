@@ -6,23 +6,25 @@ using System.Text;
 using System.Threading.Tasks;
 using Test_MauiApp1.Models;
 using Test_MauiApp1.Models.Response;
+using Unity;
 
 namespace Test_MauiApp1.Services;
 public class LoginService
 {
-    private readonly UserService _userService;
     private readonly StateService _stateService;
+    private readonly IUnityContainer _container;
 
-    public LoginService(UserService userService, StateService stateService)
+    public LoginService(StateService stateService, IUnityContainer  container)
     {
-        _userService = userService;
         _stateService = stateService;
+        _container = container;
     }
 
 
     public async Task<bool> TryToLoginAsync()
     {
-          
+
+        var userService = _container.Resolve<UserService>();
 
         if (Preferences.Default.ContainsKey("UserName") && Preferences.Default.ContainsKey("Token"))
         {
@@ -36,7 +38,7 @@ public class LoginService
             var isVerified = false;
             try
             {
-                isVerified = await _userService.VerifyToken();
+                isVerified = await userService.VerifyToken();
             }
             catch
             {
@@ -60,9 +62,11 @@ public class LoginService
 
     public async Task<MessageAndStatusAndData<UserNameAndTokenResponse>> LoginAsync(string userName, string password)
     {
+        var userService = _container.Resolve<UserService>();
+
 
         MessageAndStatusAndData<UserNameAndTokenResponse> response =
-                   await _userService.LoginAsync(userName, password);
+                   await userService.LoginAsync(userName, password);
 
         if (response.IsSuccess)
         {
