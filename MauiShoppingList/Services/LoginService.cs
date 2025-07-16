@@ -49,7 +49,7 @@ public class LoginService
             if (isVerified is not true)
             {
                 Preferences.Default.Remove("Token");
-                Preferences.Default.Remove("UserName");
+                //Preferences.Default.Remove("UserName");
 
                 return false;
             }
