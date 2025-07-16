@@ -20,17 +20,30 @@ public class LoginService
     }
 
 
-    public bool TryToLogin()
+    public async Task<bool> TryToLogin()
     {
           
 
         if (Preferences.Default.ContainsKey("UserName") && Preferences.Default.ContainsKey("Token"))
         {
-            _stateService.StateInfo.UserName = Preferences.Default.Get("UserName", "");
-            _stateService.StateInfo.Token = Preferences.Default.Get("Token", "");
+            var token = Preferences.Default.Get("Token", "");
+            var userName = Preferences.Default.Get("UserName", "");
 
-            var a = _stateService.StateInfo.Token;
-            var b = _stateService.StateInfo.UserName;
+
+            _stateService.StateInfo.UserName = userName;
+            _stateService.StateInfo.Token = token;
+
+
+            if (await _userService.VerifyToken() is not true)
+            {
+                Preferences.Default.Remove("Token");
+                Preferences.Default.Remove("UserName");
+
+                return false;
+            }
+
+            //var a = _stateService.StateInfo.Token;
+            //var b = _stateService.StateInfo.UserName;
 
             return true;           
         }
