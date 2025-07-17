@@ -88,14 +88,14 @@ namespace Test_MauiApp1.ViewModels
 
                 if (!response.IsError)
                 {
-                    //App.Current.MainPage = new NavigationPage(App.Container.Resolve<ListAggregationPage>())
-                    //{
-                    //    BarBackgroundColor = Colors.WhiteSmoke,
-                    //    BarTextColor = Colors.Black //color of arrow in ToolbarItem
-                    //};
+                    App.Current.MainPage = new NavigationPage(App.Container.Resolve<ListAggregationPage>())
+                    {
+                        BarBackgroundColor = Colors.WhiteSmoke,
+                        BarTextColor = Colors.Black //color of arrow in ToolbarItem
+                    };
 
-                    await Navigation.PushAsync(App.Container.Resolve<ListAggregationPage>());
-                    Navigation.RemovePage(Navigation.NavigationStack[^2]);
+                    //await Navigation.PushAsync(App.Container.Resolve<ListAggregationPage>());
+                    // Navigation.RemovePage(Navigation.NavigationStack[^2]);
                 }
                 else 
                 {
