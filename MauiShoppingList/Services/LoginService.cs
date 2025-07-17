@@ -14,7 +14,7 @@ public class LoginService
     private readonly StateService _stateService;
     private readonly IUnityContainer _container;
 
-    public LoginService(StateService stateService, IUnityContainer  container)
+    public LoginService(StateService stateService, IUnityContainer container)
     {
         _stateService = stateService;
         _container = container;
@@ -34,35 +34,36 @@ public class LoginService
         var token = Preferences.Default.Get("Token", "");
         var userName = Preferences.Default.Get("UserName", "");
 
-        if (!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(userName))
+        if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(userName))
         {
-            
-            _stateService.StateInfo.UserName = userName;
-            _stateService.StateInfo.Token = token;
-
-            var isVerified = false;
-            try
-            {
-                isVerified = await userService.VerifyToken();
-            }
-            catch
-            {
-                isVerified = false;
-            }
-
-          
-            if (isVerified is not true)
-            {
-                Preferences.Default.Remove("Token");
-                //Preferences.Default.Remove("UserName");
-
-                return false;
-            }
-
-            return true;           
+            return false;
         }
-                        
-        return false;
+        _stateService.StateInfo.UserName = userName;
+        _stateService.StateInfo.Token = token;
+
+        var isVerified = false;
+        try
+        {
+            isVerified = await userService.VerifyToken();
+        }
+        catch
+        {
+            isVerified = false;
+        }
+
+
+        if (isVerified is not true)
+        {
+            Preferences.Default.Remove("Token");
+            //Preferences.Default.Remove("UserName");
+
+            return false;
+        }
+
+        return true;
+
+
+
     }
 
     public async Task<MessageAndStatusAndData<UserNameAndTokenResponse>> LoginAsync(string userName, string password)
@@ -87,7 +88,7 @@ public class LoginService
 
     }
 
-    public  void LoginByTokenAsync(string userName, string token)
+    public void LoginByTokenAsync(string userName, string token)
     {
         Preferences.Default.Set("UserName", userName);
         Preferences.Default.Set("Token", token);
@@ -98,7 +99,7 @@ public class LoginService
 
     //TODO: logout
 
-    public void LogOut() 
+    public void LogOut()
     {
         Preferences.Default.Remove("UserName");
         Preferences.Default.Remove("Token");
