@@ -97,7 +97,6 @@ public class LoginService
         _stateService.StateInfo.Token = token;
     }
 
-    //TODO: logout
 
     public void LogOut()
     {
