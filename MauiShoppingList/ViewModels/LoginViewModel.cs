@@ -45,18 +45,19 @@ namespace Test_MauiApp1.ViewModels
             if (Preferences.Default.ContainsKey("Password"))
                 Model.Password = Preferences.Default.Get("Password","");
             Model.PropertyChanged += LoginViewModel_PropertyChanged;
+
         }
 
 
         protected override async  Task OnAppearingAsync()
         {
-           
+
         }
 
         protected override async Task InitAsync()
         {
+           
 
-                                             
         }
 
         private void LoginViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -87,7 +88,14 @@ namespace Test_MauiApp1.ViewModels
 
                 if (!response.IsError)
                 {
+                    //App.Current.MainPage = new NavigationPage(App.Container.Resolve<ListAggregationPage>())
+                    //{
+                    //    BarBackgroundColor = Colors.WhiteSmoke,
+                    //    BarTextColor = Colors.Black //color of arrow in ToolbarItem
+                    //};
+
                     await Navigation.PushAsync(App.Container.Resolve<ListAggregationPage>());
+                    Navigation.RemovePage(Navigation.NavigationStack[^2]);
                 }
                 else 
                 {
@@ -97,7 +105,7 @@ namespace Test_MauiApp1.ViewModels
             }
 
         }
-        
+       
         public ICommand CreateAccountCommand
         {
             get

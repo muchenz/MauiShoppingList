@@ -43,12 +43,18 @@ namespace Test_MauiApp1.ViewModels
             {
 
                 _loginService.LoginByTokenAsync(response.Data.Email, response.Data.Token);
-                // App.FacebookToken = accessFacebookToken;
-                await Navigation.PushAsync(App.Container.Resolve<ListAggregationPage>());
-                if (Navigation.NavigationStack.Count > 1)
+
+                App.Current.MainPage = new NavigationPage(App.Container.Resolve<ListAggregationPage>())
                 {
-                    Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
-                }
+                    BarBackgroundColor = Colors.WhiteSmoke,
+                    BarTextColor = Colors.Black //color of arrow in ToolbarItem
+                };
+
+                //await Navigation.PushAsync(App.Container.Resolve<ListAggregationPage>());
+                //if (Navigation.NavigationStack.Count > 1)
+                //{
+                //    Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
+                //}
 
             }
             else

@@ -26,12 +26,17 @@ public class LoginService
 
         var userService = _container.Resolve<UserService>();
 
-        if (Preferences.Default.ContainsKey("UserName") && Preferences.Default.ContainsKey("Token"))
+        if (!Preferences.Default.ContainsKey("UserName") || !Preferences.Default.ContainsKey("Token"))
         {
-            var token = Preferences.Default.Get("Token", "");
-            var userName = Preferences.Default.Get("UserName", "");
+            return false;
+        }
 
+        var token = Preferences.Default.Get("Token", "");
+        var userName = Preferences.Default.Get("UserName", "");
 
+        if (!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(userName))
+        {
+            
             _stateService.StateInfo.UserName = userName;
             _stateService.StateInfo.Token = token;
 
@@ -92,4 +97,14 @@ public class LoginService
     }
 
     //TODO: logout
+
+    public void LogOut() 
+    {
+        Preferences.Default.Remove("UserName");
+        Preferences.Default.Remove("Token");
+        Preferences.Default.Remove("Password");
+
+        _stateService.StateInfo.UserName = null;
+        _stateService.StateInfo.Token = null;
+    }
 }

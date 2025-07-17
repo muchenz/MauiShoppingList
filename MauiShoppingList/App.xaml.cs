@@ -60,6 +60,7 @@ public partial class App : Application
         });
     }
     
+
     private void InitContainer()
     {
         App.Container = new UnityContainer().EnableDiagnostic();

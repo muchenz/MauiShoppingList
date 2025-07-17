@@ -33,6 +33,7 @@ namespace Test_MauiApp1.ViewModels
         private readonly StateService _stateService;
         private readonly IMessenger _messenger;
         private readonly SignalRService _signalRService;
+        private readonly LoginService _loginService;
         string _userName;
         ListAggregator _selectedItem;
         public ListAggregator SelectedItem { get { return _selectedItem; } set { SetProperty(ref _selectedItem, value); } }
@@ -51,7 +52,7 @@ namespace Test_MauiApp1.ViewModels
         public ListAggregator AddListAggregatorModel { get { return _addListAggregatorModel; } set { SetProperty(ref _addListAggregatorModel, value); } }
 
         public ListAggregationViewModel(UserService userService, ListItemService listItemService, IConfiguration configuration,
-            StateService stateService, IMessenger messenger, SignalRService signalRService)
+            StateService stateService, IMessenger messenger, SignalRService signalRService, LoginService loginService)
         {
             _userName = stateService.StateInfo.UserName;
             _userService = userService;
@@ -60,6 +61,7 @@ namespace Test_MauiApp1.ViewModels
             _stateService = stateService;
             _messenger = messenger;
             _signalRService = signalRService;
+            _loginService = loginService;
             _messenger.Register<RequestForNewDataMessage>(this, async  (r, m) =>
             {
 
@@ -76,6 +78,7 @@ namespace Test_MauiApp1.ViewModels
             });
 
             base.InitAsyncCommand.Execute(null);
+            
         }
 
         int iDItemToDelete;
@@ -252,10 +255,14 @@ namespace Test_MauiApp1.ViewModels
                                 var a = DependencyService.Get<IClearCookies>();
                                 a.ClearAllCookies();
 
-                                Preferences.Default.Set("UserName", "");
-                                Preferences.Default.Set("Password", "");
+                                _loginService.LogOut();
 
-                                await Navigation.PopAsync();
+                                //await Navigation.PushAsync(App.Container.Resolve<LoginPage>());
+                                App.Current.MainPage = new NavigationPage(App.Container.Resolve<LoginPage>())
+                                {
+                                    BarBackgroundColor = Colors.WhiteSmoke,
+                                    BarTextColor = Colors.Black //color of arrow in ToolbarItem
+                                };
                             }
 
                             catch (Exception ex)
@@ -273,6 +280,8 @@ namespace Test_MauiApp1.ViewModels
 
             }
         }
+
+
         //public ICommand ItemClickedCommand
         //{
         //    get
