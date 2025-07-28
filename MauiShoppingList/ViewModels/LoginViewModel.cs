@@ -82,7 +82,7 @@ namespace Test_MauiApp1.ViewModels
             {
                 LoginError = null;
                 
-                MessageAndStatusAndData<UserNameAndTokenResponse> response = 
+                MessageAndStatusAndData<UserNameAndTokensResponse> response = 
                     await _loginService.LoginAsync(Model.UserName, Model.Password);
                     
 

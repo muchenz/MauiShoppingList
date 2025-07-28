@@ -46,14 +46,14 @@ namespace Test_MauiApp1.Services
 
 
 
-        public async Task<MessageAndStatusAndData<UserNameAndTokenResponse>> GetTokenFromFacebookAccessToken(string accessFacebookToken)
+        public async Task<MessageAndStatusAndData<UserNameAndTokensResponse>> GetTokenFromFacebookAccessToken(string accessFacebookToken)
         {
             var querry = new QueryBuilder();
             querry.Add("access_token", accessFacebookToken);
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, "User/FacebookToken" + await querry.GetQuerryUrlAsync());
 
-            MessageAndStatusAndData<UserNameAndTokenResponse> message = null;
+            MessageAndStatusAndData<UserNameAndTokensResponse> message = null;
             try
             {
                 var response = await _httpClient.SendAsync(requestMessage);
@@ -61,21 +61,21 @@ namespace Test_MauiApp1.Services
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
 
-                    var tokenData = JsonConvert.DeserializeObject<UserNameAndTokenResponse>(data);
+                    var tokenData = JsonConvert.DeserializeObject<UserNameAndTokensResponse>(data);
 
-                    return MessageAndStatusAndData<UserNameAndTokenResponse>.Ok(tokenData);
+                    return MessageAndStatusAndData<UserNameAndTokensResponse>.Ok(tokenData);
                 }
-                message = MessageAndStatusAndData<UserNameAndTokenResponse>.Fail(
+                message = MessageAndStatusAndData<UserNameAndTokensResponse>.Fail(
                     JsonConvert.DeserializeObject<ProblemDetails>(data).Title);
             }
             catch
             {
-                message = MessageAndStatusAndData<UserNameAndTokenResponse>.Fail("Connection problem.");
+                message = MessageAndStatusAndData<UserNameAndTokensResponse>.Fail("Connection problem.");
             }
             return message;
         }
 
-        public async Task<MessageAndStatusAndData<UserNameAndTokenResponse>> LoginAsync(string userName, string password)
+        public async Task<MessageAndStatusAndData<UserNameAndTokensResponse>> LoginAsync(string userName, string password)
         {
 
             var loginRequest = new LoginRequest
@@ -106,21 +106,21 @@ namespace Test_MauiApp1.Services
 
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
-                    return MessageAndStatusAndData<UserNameAndTokenResponse>.Fail("Invalid username or password.");
+                    return MessageAndStatusAndData<UserNameAndTokensResponse>.Fail("Invalid username or password.");
                 }
                 if (!response.IsSuccessStatusCode)
                 {
-                    return MessageAndStatusAndData<UserNameAndTokenResponse>.Fail("Some errors occured.");
+                    return MessageAndStatusAndData<UserNameAndTokensResponse>.Fail("Some errors occured.");
                 }
 
                 var data = await response.Content.ReadAsStringAsync();
 
-                var tokenAndUsername = JsonConvert.DeserializeObject<UserNameAndTokenResponse>(data);
-                return MessageAndStatusAndData<UserNameAndTokenResponse>.Ok(tokenAndUsername);
+                var tokenAndUsername = JsonConvert.DeserializeObject<UserNameAndTokensResponse>(data);
+                return MessageAndStatusAndData<UserNameAndTokensResponse>.Ok(tokenAndUsername);
             }
             catch
             {
-                return MessageAndStatusAndData<UserNameAndTokenResponse>.Fail("Connection problem.");
+                return MessageAndStatusAndData<UserNameAndTokensResponse>.Fail("Connection problem.");
             }
 
 

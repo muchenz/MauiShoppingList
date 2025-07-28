@@ -66,12 +66,12 @@ public class LoginService
 
     }
 
-    public async Task<MessageAndStatusAndData<UserNameAndTokenResponse>> LoginAsync(string userName, string password)
+    public async Task<MessageAndStatusAndData<UserNameAndTokensResponse>> LoginAsync(string userName, string password)
     {
         var userService = _container.Resolve<UserService>();
 
 
-        MessageAndStatusAndData<UserNameAndTokenResponse> response =
+        MessageAndStatusAndData<UserNameAndTokensResponse> response =
                    await userService.LoginAsync(userName, password);
 
         if (response.IsSuccess)
