@@ -157,7 +157,7 @@ namespace Test_MauiApp1.ViewModels
                         message.Message = $"You changing YOURS ({item.Name}) prermission.\n If you changed you lose Administration permission.";
                         message.Accept = "I'm sure!";
                         message.Cancel = "Cancel";
-                        message.OnCompleted += async (accept) =>
+                        message.OnCompletedAsync += async (accept) =>
                         {
                             if (accept)
                             {
@@ -228,7 +228,7 @@ namespace Test_MauiApp1.ViewModels
                         message.Message = $"You delete YOURS ({item.Name}) prermission.\n If you delete, you lose access to this list!";
                         message.Accept = "I'm sure!";
                         message.Cancel = "Cancel";
-                        message.OnCompleted += async (accept) =>
+                        message.OnCompletedAsync += async (accept) =>
                         {
                             if (accept)
                             {
@@ -258,7 +258,7 @@ namespace Test_MauiApp1.ViewModels
                         message.Accept = "I'm sure!";
                         message.Cancel = "Cancel";
                         
-                        message.OnCompleted += async (accept) =>
+                        message.OnCompletedAsync += async (accept) =>
                         {
                             if (accept)
                             { 

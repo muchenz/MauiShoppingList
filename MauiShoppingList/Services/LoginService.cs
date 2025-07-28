@@ -106,15 +106,17 @@ public class LoginService
     }
 
 
-    public void LogOut()
+    public async Task LogOutAsync()
     {
         Preferences.Default.Remove("UserName");
         Preferences.Default.Remove("Token");
         Preferences.Default.Remove("RefreshToken");
         Preferences.Default.Remove("Password");
-
+        var userService = _container.Resolve<UserService>();
+        await userService.LogOutAsync();
 
         _stateService.StateInfo.UserName = null;
         _stateService.StateInfo.Token = null;
+        _stateService.StateInfo.RefreshToken = null;
     }
 }

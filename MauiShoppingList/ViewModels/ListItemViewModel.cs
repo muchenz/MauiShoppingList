@@ -164,7 +164,7 @@ namespace Test_MauiApp1.ViewModels
                     message.Message = $"You deleting '{nameItemToDelete}'.";
                     message.Accept = "I'm sure!";
                     message.Cancel = "Cancel";
-                    message.OnCompleted += async (accept) =>
+                    message.OnCompletedAsync += async (accept) =>
                     {
                         if (accept)
                         {

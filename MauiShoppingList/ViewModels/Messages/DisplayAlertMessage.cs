@@ -32,4 +32,5 @@ internal class DisplayAlert
     public string Accept { get; set; }
 
     public Action<bool> OnCompleted { get; set; }
+    public Func<bool, Task> OnCompletedAsync { get; set; }
 }

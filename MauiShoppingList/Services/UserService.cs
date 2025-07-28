@@ -125,7 +125,13 @@ namespace Test_MauiApp1.Services
 
 
         }
+        public async Task LogOutAsync()
+        {
 
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, "User/LogOut");
+
+            var response = await _httpClient.SendAsync(requestMessage);
+        }
         public async Task<User> GetUserDataTreeAsync()
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, "User/UserDataTree");

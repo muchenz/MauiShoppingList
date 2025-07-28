@@ -97,7 +97,7 @@ namespace Test_MauiApp1.ViewModels
                     message.Message = $"You deleting '{nameItemToDelete}'.";
                     message.Accept = "I'm sure!";
                     message.Cancel = "Cancel";
-                    message.OnCompleted += async (accept) =>
+                    message.OnCompletedAsync += async (accept) =>
                     {
                         if (accept)
                         {
@@ -246,7 +246,7 @@ namespace Test_MauiApp1.ViewModels
                     message.Message = $"Are you want logout?";
                     message.Accept = "I'm sure!";
                     message.Cancel = "Cancel";
-                    message.OnCompleted += async (accept) =>
+                    message.OnCompletedAsync += async (accept) =>
                     {
                         if (accept)
                         {
@@ -255,7 +255,7 @@ namespace Test_MauiApp1.ViewModels
                                 var a = DependencyService.Get<IClearCookies>();
                                 a.ClearAllCookies();
 
-                                _loginService.LogOut();
+                                await _loginService.LogOutAsync();
 
                                 //await Navigation.PushAsync(App.Container.Resolve<LoginPage>());
                                 App.Current.MainPage = new NavigationPage(App.Container.Resolve<LoginPage>())

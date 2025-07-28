@@ -139,6 +139,9 @@ public partial class App : Application
             if (message.OnCompleted != null)
                 message.OnCompleted(result);
 
+            if (message.OnCompletedAsync != null)
+                await message.OnCompletedAsync(result);
+
         });
     }
 
