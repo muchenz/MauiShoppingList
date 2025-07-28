@@ -26,20 +26,23 @@ public class LoginService
 
         var userService = _container.Resolve<UserService>();
 
-        if (!Preferences.Default.ContainsKey("UserName") || !Preferences.Default.ContainsKey("Token"))
+        if (!Preferences.Default.ContainsKey("UserName") || !Preferences.Default.ContainsKey("Token") 
+            || !Preferences.Default.ContainsKey("RefreshToken"))
         {
             return false;
         }
 
         var token = Preferences.Default.Get("Token", "");
+        var refreshToken = Preferences.Default.Get("RefreshToken", "");
         var userName = Preferences.Default.Get("UserName", "");
 
-        if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(userName))
+        if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(refreshToken))
         {
             return false;
         }
         _stateService.StateInfo.UserName = userName;
         _stateService.StateInfo.Token = token;
+        _stateService.StateInfo.RefreshToken = refreshToken;
 
         var isVerified = false;
         try
@@ -55,6 +58,7 @@ public class LoginService
         if (isVerified is not true)
         {
             Preferences.Default.Remove("Token");
+            Preferences.Default.Remove("RefreshToken");
             //Preferences.Default.Remove("UserName");
 
             return false;
@@ -78,9 +82,11 @@ public class LoginService
         {
             Preferences.Default.Set("UserName", response.Data.UserName);
             Preferences.Default.Set("Token", response.Data.Token);
+            Preferences.Default.Set("RefreshToken", response.Data.RefreshToken);
 
             _stateService.StateInfo.UserName = response.Data.UserName;
             _stateService.StateInfo.Token = response.Data.Token;
+            _stateService.StateInfo.RefreshToken = response.Data.RefreshToken;
         }
 
 
@@ -88,13 +94,15 @@ public class LoginService
 
     }
 
-    public void LoginByTokenAsync(string userName, string token)
+    public void LoginByTokenAsync(string userName, string token, string refreshToken)
     {
         Preferences.Default.Set("UserName", userName);
         Preferences.Default.Set("Token", token);
+        Preferences.Default.Set("RefreshToken", refreshToken);
 
         _stateService.StateInfo.UserName = userName;
         _stateService.StateInfo.Token = token;
+        _stateService.StateInfo.Token = refreshToken;
     }
 
 
@@ -102,7 +110,9 @@ public class LoginService
     {
         Preferences.Default.Remove("UserName");
         Preferences.Default.Remove("Token");
+        Preferences.Default.Remove("RefreshToken");
         Preferences.Default.Remove("Password");
+
 
         _stateService.StateInfo.UserName = null;
         _stateService.StateInfo.Token = null;

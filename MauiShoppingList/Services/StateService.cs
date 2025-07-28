@@ -18,6 +18,7 @@ namespace Test_MauiApp1.Services
     {
         bool IsAuthenticated { get; set; }
         public string Token { get; set; }
+        public string RefreshToken { get; set; }
         public string ClientSignalRID { get; set; }
 
 
