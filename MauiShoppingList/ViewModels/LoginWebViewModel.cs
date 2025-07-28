@@ -42,7 +42,7 @@ namespace Test_MauiApp1.ViewModels
             if (response.IsError == false)
             {
 
-                _loginService.LoginByTokenAsync(response.Data.Email, response.Data.Token);
+                _loginService.LoginByTokenAsync(response.Data.UserName, response.Data.Token);
 
                 App.Current.MainPage = new NavigationPage(App.Container.Resolve<ListAggregationPage>())
                 {

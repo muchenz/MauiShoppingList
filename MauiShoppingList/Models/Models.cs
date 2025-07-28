@@ -9,11 +9,12 @@ using System.Text;
 
 namespace Test_MauiApp1.Models
 {
-    public class TokenAndEmailData
-    {
-        public string Token { get; set; }
-        public string Email { get; set; }
-    }
+    //public class TokenAndEmailData
+    //{
+    //    public string Token { get; set; }
+    //    public string RefreshToken { get; set; }
+    //    public string Email { get; set; }
+    //}
 
     public class PermissionsToListAggr
     {

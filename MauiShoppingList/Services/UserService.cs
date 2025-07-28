@@ -46,14 +46,14 @@ namespace Test_MauiApp1.Services
 
 
 
-        public async Task<MessageAndStatusAndData<TokenAndEmailData>> GetTokenFromFacebookAccessToken(string accessFacebookToken)
+        public async Task<MessageAndStatusAndData<UserNameAndTokenResponse>> GetTokenFromFacebookAccessToken(string accessFacebookToken)
         {
             var querry = new QueryBuilder();
             querry.Add("access_token", accessFacebookToken);
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, "User/FacebookToken" + await querry.GetQuerryUrlAsync());
 
-            MessageAndStatusAndData<TokenAndEmailData> message = null;
+            MessageAndStatusAndData<UserNameAndTokenResponse> message = null;
             try
             {
                 var response = await _httpClient.SendAsync(requestMessage);
@@ -61,16 +61,16 @@ namespace Test_MauiApp1.Services
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
 
-                    var tokenData = JsonConvert.DeserializeObject<TokenAndEmailData>(data);
+                    var tokenData = JsonConvert.DeserializeObject<UserNameAndTokenResponse>(data);
 
-                    return MessageAndStatusAndData<TokenAndEmailData>.Ok(tokenData);
+                    return MessageAndStatusAndData<UserNameAndTokenResponse>.Ok(tokenData);
                 }
-                message = MessageAndStatusAndData<TokenAndEmailData>.Fail(
+                message = MessageAndStatusAndData<UserNameAndTokenResponse>.Fail(
                     JsonConvert.DeserializeObject<ProblemDetails>(data).Title);
             }
             catch
             {
-                message = MessageAndStatusAndData<TokenAndEmailData>.Fail("Connection problem.");
+                message = MessageAndStatusAndData<UserNameAndTokenResponse>.Fail("Connection problem.");
             }
             return message;
         }
