@@ -11,15 +11,17 @@ using Test_MauiApp1.Models;
 namespace Test_MauiApp1.Services;
 public class SignalRService
 {
-    public SignalRService(IConfiguration configuration, StateService stateService)
+    public SignalRService(IConfiguration configuration, StateService stateService, TokenClientService tokenClientService)
     {
         _configuration = configuration;
         _stateService = stateService;
+        _tokenClientService = tokenClientService;
     }
     private HubConnection? _hubConnection;
     private int _userId;
     private readonly IConfiguration _configuration;
     private readonly StateService _stateService;
+    private readonly TokenClientService _tokenClientService;
 
     public async Task StartConnectionAsync()
     {
@@ -32,7 +34,17 @@ public class SignalRService
         var signalRAddress = _configuration.GetSection("AppSettings")["SignlRAddress"];
         _hubConnection = new HubConnectionBuilder().WithUrl(signalRAddress, (opts) =>
         {
-            opts.Headers.Add("Access_Token", _stateService.StateInfo.Token);
+            //opts.Headers.Add("Access_Token", _stateService.StateInfo.Token);
+
+            opts.AccessTokenProvider = async () =>
+            {
+                if (_tokenClientService.IsTokenExpired())
+                {
+                    await _tokenClientService.RefreshTokensAsync();
+                }
+
+                return _stateService.StateInfo.Token;
+            };
 
             opts.HttpMessageHandlerFactory = (message) =>
             {
