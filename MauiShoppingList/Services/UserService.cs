@@ -19,12 +19,14 @@ namespace Test_MauiApp1.Services
 
 
         private readonly HttpClient _httpClient;
+        private readonly TokenHttpClient _tokenHttpClient;
         private readonly IConfiguration _configuration;
         private readonly StateService _stateService;
 
-        public UserService(HttpClient httpClient, IConfiguration configuration, StateService stateService)
+        public UserService(HttpClient httpClient, TokenHttpClient tokenHttpClient, IConfiguration configuration, StateService stateService)
         {
             _httpClient = httpClient;
+            _tokenHttpClient = tokenHttpClient;
 
             //----------------------
             // HttpClientHandler handler = new HttpClientHandler();
@@ -108,7 +110,7 @@ namespace Test_MauiApp1.Services
                 });
 
 
-                var response = await _httpClient.SendAsync(requestMessage, source.Token);
+                var response = await _httpClient.SendAsync(requestMessage, cancellationToken: source.Token);
 
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
@@ -136,13 +138,13 @@ namespace Test_MauiApp1.Services
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, "User/LogOut");
 
-            var response = await _httpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage);
         }
         public async Task<User> GetUserDataTreeAsync()
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, "User/UserDataTree");
 
-            var response = await _httpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage);
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -171,7 +173,7 @@ namespace Test_MauiApp1.Services
             };
 
 
-            var response = await _httpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage);
 
             if (response.IsSuccessStatusCode)
             {
@@ -197,7 +199,7 @@ namespace Test_MauiApp1.Services
 
 
 
-            var response = await _httpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage);
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -233,7 +235,7 @@ namespace Test_MauiApp1.Services
               = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
 
-            var response = await _httpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage);
 
             if (response.IsSuccessStatusCode)
             {
@@ -248,7 +250,7 @@ namespace Test_MauiApp1.Services
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, "Permissions/ListAggregationWithUsersPermission");
 
 
-            var response = await _httpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage);
 
             var data = await response.Content.ReadAsStringAsync();
 
@@ -300,9 +302,9 @@ namespace Test_MauiApp1.Services
               = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
 
-            SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
+            //SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
 
-            var response = await _httpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage, listAggregationId);
 
             var responseStatusCode = response.StatusCode;
 

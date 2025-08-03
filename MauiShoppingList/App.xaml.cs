@@ -87,6 +87,8 @@ public partial class App : Application
         // App.Container.RegisterType<HttpClient>();
 
         App.Container.RegisterType<AuthHeaderHandler>();
+        App.Container.RegisterSingleton<TokenHttpClient>();
+
         App.Container.RegisterFactory<HttpClient>(c =>
         {
 

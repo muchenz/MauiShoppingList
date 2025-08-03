@@ -25,20 +25,27 @@ public class TokenClientService
         _configuration = configuration;
         _stateService = stateService;
     }
-
-
     public async Task<bool> RefreshTokensAsync()
     {
         var refreshToken = _stateService.StateInfo.RefreshToken;
         var accessToken = _stateService.StateInfo.Token;
-         
+        var expectedVersion = int.Parse(ParseClaimsFromJwt(accessToken).First(a => a.Type == ClaimTypes.Version).Value) + 1;
+        Preferences.Default.Set("expectedVersion", expectedVersion);
+
+        return await RefreshTokensAsync(accessToken, refreshToken);
+    }
+
+    private async Task<bool> RefreshTokensAsync(string accessToken, string refreshToken)
+    {
+             
 
         var requestMessage = new HttpRequestMessage(HttpMethod.Get, "User/GetNewToken");
 
         requestMessage.Headers.Authorization
                     = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", accessToken);
         requestMessage.Headers.Add("refresh_token", refreshToken);
-
+        requestMessage.Headers.Add("deviceid", Preferences.Default.Get("gid", ""));
+        
         HttpResponseMessage response = null;
             response = await _httpClient.SendAsync(requestMessage);
 
@@ -54,7 +61,32 @@ public class TokenClientService
         return true;
     }
 
+    SemaphoreSlim semSlim = new SemaphoreSlim(1);
+    public bool IsTokenRefresing { get; set; } = false;
 
+
+    public async Task CheckAndSetNewTokens()
+    {
+        if (!IsTokenExpired())
+        {
+            return;
+        }
+        try
+        {
+            await semSlim.WaitAsync();
+            if (IsTokenExpired())
+            {
+                IsTokenRefresing = true; 
+                await RefreshTokensAsync();
+            }
+        }
+        finally
+        {
+            IsTokenRefresing = false;
+            semSlim.Release();
+
+        }
+    }
 
     private void SetTokens(string accessToken, string refreshToken)
     {
@@ -74,7 +106,7 @@ public class TokenClientService
         var expiration = claims.Where(a=>a.Type == "exp_datetime").First().Value;
 
         // UTC czas, więc trzeba porównać z DateTime.UtcNow
-        return DateTime.Parse( expiration )< DateTime.UtcNow;
+        return DateTimeOffset.Parse( expiration ) < DateTime.UtcNow;
     }
 
     private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)

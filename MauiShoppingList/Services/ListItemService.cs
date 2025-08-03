@@ -17,12 +17,14 @@ namespace Test_MauiApp1.Services
     {
 
         private readonly HttpClient _httpClient;
+        private readonly TokenHttpClient _tokenHttpClient;
         private readonly IConfiguration _configuration;
         private readonly StateService _stateService;
 
-        public ListItemService(HttpClient httpClient, IConfiguration configuration, StateService stateService)
+        public ListItemService(HttpClient httpClient, TokenHttpClient tokenHttpClient, IConfiguration configuration, StateService stateService)
         {
             _httpClient = httpClient;
+            _tokenHttpClient = tokenHttpClient;
 
             ////---------------------
             //HttpClientHandler handler = new HttpClientHandler();
@@ -33,7 +35,7 @@ namespace Test_MauiApp1.Services
 
             //var baseAddress = configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"];
             //_httpClient.BaseAddress = new Uri(baseAddress);
-            
+
             //// _httpClient.BaseAddress = new Uri("https://192.168.8.222:5003/api/");
             //// _httpClient.BaseAddress = new Uri("https://94.251.148.187:5003/api/");
 
@@ -103,11 +105,11 @@ namespace Test_MauiApp1.Services
               = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
 
-            await SetRequestBearerAuthorizationHeader(requestMessage);
-            SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
+            //await SetRequestBearerAuthorizationHeader(requestMessage);
+            //SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
 
 
-            var response = await _httpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage,listAggregationId);
 
             var responseStatusCode = response.StatusCode;
 
@@ -140,11 +142,11 @@ namespace Test_MauiApp1.Services
             //  = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
 
-            await SetRequestBearerAuthorizationHeader(requestMessage);
-            SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
+            //await SetRequestBearerAuthorizationHeader(requestMessage);
+            //SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
 
 
-            var response = await _httpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage, listAggregationId);
 
             var responseStatusCode = response.StatusCode;
 
@@ -178,10 +180,10 @@ namespace Test_MauiApp1.Services
               = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
 
-            await SetRequestBearerAuthorizationHeader(requestMessage);
-            SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
+            //await SetRequestBearerAuthorizationHeader(requestMessage);
+            //SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
 
-            var response = await _httpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage);
 
             var responseStatusCode = response.StatusCode;
 
@@ -214,11 +216,11 @@ namespace Test_MauiApp1.Services
               = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
 
-            await SetRequestBearerAuthorizationHeader(requestMessage);
-            SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
+            //await SetRequestBearerAuthorizationHeader(requestMessage);
+            //SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
 
 
-            var response = await _httpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage);
 
             var responseStatusCode = response.StatusCode;
 
@@ -248,11 +250,11 @@ namespace Test_MauiApp1.Services
             //var requestMessage = new HttpRequestMessage(HttpMethod.Post, "ListItem/DeleteListItem" + await querry.GetQuerryUrlAsync());                                  
 
 
-            await SetRequestBearerAuthorizationHeader(requestMessage);
-            SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
+            //await SetRequestBearerAuthorizationHeader(requestMessage);
+            //SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
 
 
-            var response = await _httpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage);
 
             var responseStatusCode = response.StatusCode;
             if (responseStatusCode == HttpStatusCode.Forbidden)
