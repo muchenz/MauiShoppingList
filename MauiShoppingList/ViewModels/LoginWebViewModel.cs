@@ -17,10 +17,13 @@ namespace Test_MauiApp1.ViewModels
         string facbookUrl = "";
         public LoginWebViewModel(UserService userService, LoginService loginService)
         {
+            var gid = Preferences.Default.Get("gid", "");
+
+
             WebUrl = "https://www.facebook.com/v10.0/dialog/oauth?client_id=259675572518658"
                     + "&response_type=token"
                     + "&redirect_uri=https://192.168.0.222:5003/api/User/FacebookToken"
-                    + "&state=st=state123abc,ds=123456789&scope=public_profile,email";
+                    + $"&state=st=state123abc,ds=123456789,di={gid}&scope=public_profile,email";
 
             _userService = userService;
             _loginService = loginService;
@@ -35,9 +38,9 @@ namespace Test_MauiApp1.ViewModels
 
         public string WebUrl { get { return _webUrl; } set { SetProperty(ref _webUrl, value); } }
 
-        public async Task ObtainedAccessTokenAsync(string accessFacebookToken)
+        public async Task ObtainedAccessTokenAsync(string accessFacebookToken, string state )
         {
-            var response = await _userService.GetTokenFromFacebookAccessToken(accessFacebookToken);
+            var response = await _userService.GetTokenFromFacebookAccessToken(accessFacebookToken, state);
 
             if (response.IsError == false)
             {

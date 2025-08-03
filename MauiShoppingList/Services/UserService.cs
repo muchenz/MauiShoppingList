@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -46,10 +47,11 @@ namespace Test_MauiApp1.Services
 
 
 
-        public async Task<MessageAndStatusAndData<UserNameAndTokensResponse>> GetTokenFromFacebookAccessToken(string accessFacebookToken)
+        public async Task<MessageAndStatusAndData<UserNameAndTokensResponse>> GetTokenFromFacebookAccessToken(string accessFacebookToken, string state)
         {
             var querry = new QueryBuilder();
             querry.Add("access_token", accessFacebookToken);
+            querry.Add("state", state );
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, "User/FacebookToken" + await querry.GetQuerryUrlAsync());
 
@@ -78,10 +80,14 @@ namespace Test_MauiApp1.Services
         public async Task<MessageAndStatusAndData<UserNameAndTokensResponse>> LoginAsync(string userName, string password)
         {
 
+            var gid = Preferences.Default.Get("gid", "");
+
             var loginRequest = new LoginRequest
             {
                 UserName = userName,
-                Password = password
+                Password = password,
+                DeviceId = gid
+
             };
 
             var json = JsonConvert.SerializeObject(loginRequest);
@@ -147,11 +153,13 @@ namespace Test_MauiApp1.Services
 
         public async Task<MessageAndStatusAndData<string>> RegisterAsync(RegistrationModel model)
         {
+            var gid = Preferences.Default.Get("gid", "");
 
             var loginRequest = new RegistrationRequest
             {
                 UserName = model.UserName,
-                Password = model.Password
+                Password = model.Password,
+
             };
 
             var json = JsonConvert.SerializeObject(loginRequest);

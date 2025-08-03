@@ -18,17 +18,20 @@ public partial class LoginWebPage : ContentPage
     {
 
         var token = string.Empty;
-
+        var state = string.Empty;
+        var url = e.Url;
         if (e.Url.Contains("#access_token="))
         {
             token = e.Url.Split("#access_token=")[1].Split("&")[0];
+            state = Uri.UnescapeDataString(e.Url.Split("state=")[1]);
+
 
         }
 
 
         if (!string.IsNullOrEmpty(token))
         {
-            await ((LoginWebViewModel)BindingContext).ObtainedAccessTokenAsync(token);
+            await ((LoginWebViewModel)BindingContext).ObtainedAccessTokenAsync(token, state);
 
         }
 
