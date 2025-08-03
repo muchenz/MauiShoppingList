@@ -159,6 +159,7 @@ namespace Test_MauiApp1.Services
             {
                 UserName = model.UserName,
                 Password = model.Password,
+                DeviceId = gid
 
             };
 
