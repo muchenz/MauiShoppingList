@@ -99,14 +99,18 @@ public class TokenClientService
     public bool IsTokenExpired()
     {
         var token = _stateService.StateInfo.Token;
+        if (token is null)
+        {
+            return false;
+        }
         var claims = ParseClaimsFromJwt(token);
 
-        var claimsList = claims.ToList();   
+        var claimsList = claims.ToList();
 
-        var expiration = claims.Where(a=>a.Type == "exp_datetime").First().Value;
-
-        // UTC czas, więc trzeba porównać z DateTime.UtcNow
-        return DateTimeOffset.Parse( expiration ) < DateTime.UtcNow;
+        var expiration = claims.Where(a => a.Type == "exp_datetime").First().Value;
+        var timeExpiration = DateTimeOffset.Parse(expiration);
+        var isExpiered = timeExpiration < DateTime.UtcNow;
+        return isExpiered;
     }
 
     private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
