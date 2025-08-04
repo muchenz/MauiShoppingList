@@ -110,19 +110,17 @@ public partial class App : Application
         //    return client;
 
         //}, FactoryLifetime.Singleton);
+                
 
         App.Container.RegisterFactory<HttpClient>(c =>
         {
-            var stateService = c.Resolve<StateService>();
-            var authHandler = new AuthHeaderHandler(stateService);
             var httpClientHandler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
             };
 
-            authHandler.InnerHandler = httpClientHandler;
             var baseAddress = configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"];
-            var client = new HttpClient(authHandler)
+            var client = new HttpClient(httpClientHandler)
             {
                 BaseAddress = new Uri(baseAddress),
                 Timeout = TimeSpan.FromSeconds(30)
@@ -205,16 +203,16 @@ public class AuthHeaderHandler : DelegatingHandler
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
 
-        //if (!string.IsNullOrEmpty(_stateService.StateInfo.Token))
-        //{
-        //    var token = _stateService.StateInfo.Token;
-        //    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        //}
+        if (!string.IsNullOrEmpty(_stateService.StateInfo.Token))
+        {
+            var token = _stateService.StateInfo.Token;
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
 
-        //if (!string.IsNullOrEmpty(_stateService.StateInfo.ClientSignalRID))
-        //{
-        //    request.Headers.Add("SignalRId", _stateService.StateInfo.ClientSignalRID);
-        //}
+        if (!string.IsNullOrEmpty(_stateService.StateInfo.ClientSignalRID))
+        {
+            request.Headers.Add("SignalRId", _stateService.StateInfo.ClientSignalRID);
+        }
 
         request.Headers.Add("User-Agent", "BlazorServer");
 

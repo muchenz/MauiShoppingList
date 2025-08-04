@@ -16,14 +16,14 @@ namespace Test_MauiApp1.Services;
 
 public class TokenHttpClient
 {
-    //private readonly HttpClient _httpClient;
+    private readonly HttpClient _httpClient;
     private readonly TokenClientService _tokenClientService;
     private readonly StateService _stateService;
     private readonly IConfiguration _configuration;
 
     public TokenHttpClient(HttpClient httpClient, TokenClientService tokenClientService, StateService stateService, IConfiguration configuration )
     {
-        //_httpClient = httpClient;
+        _httpClient = httpClient;
         _tokenClientService = tokenClientService;
         _stateService = stateService;
         _configuration = configuration;
@@ -37,11 +37,12 @@ public class TokenHttpClient
 
         //await _tokenClientService.CheckAndSetNewTokens();
 
-        var mes = new HttpClientHandler() ;
-        mes.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+        //var mes = new HttpClientHandler() ;
+        //mes.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
 
-        var _httpClient = new HttpClient(mes);
-        _httpClient.BaseAddress = new Uri( _configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"]);
+       // var _httpClient = new HttpClient(mes);
+
+        //_httpClient.BaseAddress = new Uri( _configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"]);
          
         if (listAggregationId is not null)
         {
@@ -63,7 +64,7 @@ public class TokenHttpClient
         }
         catch (Exception ex)
         {
-            throw;
+                throw;
         }
         if (response.StatusCode == HttpStatusCode.Unauthorized && response.Headers.TryGetValues("Token-Expired", out var values))
         {
