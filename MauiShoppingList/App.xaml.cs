@@ -91,7 +91,7 @@ public partial class App : Application
         App.Container.RegisterSingleton<TokenHttpClient>();
 
 
-        App.Container.RegisterFactory<HttpClient>(c => // some error when using AuthHeaderHandler : DelegatingHandler
+        App.Container.RegisterFactory<HttpClient>(c => // some error when using AuthHeaderHandler : DelegatingHandler (setting HttpCompletionOption.ResponseHeadersRead helps)
         {
             //HttpClientHandler handler = new HttpClientHandler();
             //handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
