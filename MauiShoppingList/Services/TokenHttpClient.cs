@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -15,16 +16,17 @@ namespace Test_MauiApp1.Services;
 
 public class TokenHttpClient
 {
-    private readonly HttpClient _httpClient;
+    //private readonly HttpClient _httpClient;
     private readonly TokenClientService _tokenClientService;
     private readonly StateService _stateService;
+    private readonly IConfiguration _configuration;
 
-    public TokenHttpClient(HttpClient httpClient, TokenClientService tokenClientService, StateService stateService)
+    public TokenHttpClient(HttpClient httpClient, TokenClientService tokenClientService, StateService stateService, IConfiguration configuration )
     {
-        _httpClient = httpClient;
+        //_httpClient = httpClient;
         _tokenClientService = tokenClientService;
         _stateService = stateService;
-
+        _configuration = configuration;
     }
     
 
@@ -35,25 +37,29 @@ public class TokenHttpClient
 
         //await _tokenClientService.CheckAndSetNewTokens();
 
-      
+        var mes = new HttpClientHandler() ;
+        mes.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+        var _httpClient = new HttpClient(mes);
+        _httpClient.BaseAddress = new Uri( _configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"]);
+         
         if (listAggregationId is not null)
         {
            SetRequestAuthorizationLevelHeader(request, (int)listAggregationId);
         }
 
-        //var signalRId = _stateService.StateInfo.ClientSignalRID;
+        var signalRId = _stateService.StateInfo.ClientSignalRID;
 
-        //request.Headers.Add("SignalRId", signalRId);
+        request.Headers.Add("SignalRId", signalRId);
 
         var accessToken = _stateService.StateInfo.Token;
 
-
-        //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
         HttpResponseMessage response = null;
         try
         {
-            response = await _httpClient.SendAsync(request, cancellationToken);
+            response = await _httpClient.SendAsync(request);//, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -71,7 +77,7 @@ public class TokenHttpClient
                 SetRequestAuthorizationLevelHeader(requestClone, (int)listAggregationId);
             }
 
-            response = await _httpClient.SendAsync(requestClone, cancellationToken);
+            response = await _httpClient.SendAsync(requestClone);//, cancellationToken);
         }
 
         return response;

@@ -58,7 +58,8 @@ public class LoginService
         var isVerified = false;
         try
         {
-            isVerified = await userService.VerifyToken();
+            //isVerified =  await userService.VerifyToken(); //TODO: VerifyAcceessRefreshTokens
+            isVerified =  await userService.VerifyAcceessRefreshTokens(token,refreshToken); // 
         }
         catch
         {

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Configuration;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Net.Http.Headers;
 using System.Security.Permissions;
 using Test_MauiApp1.Models;
@@ -89,23 +90,47 @@ public partial class App : Application
         App.Container.RegisterType<AuthHeaderHandler>();
         App.Container.RegisterSingleton<TokenHttpClient>();
 
+
+        //App.Container.RegisterFactory<HttpClient>(c =>
+        //{
+        //    //HttpClientHandler handler = new HttpClientHandler();
+        //    //handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+        //    var handler = c.Resolve<AuthHeaderHandler>();
+
+        //    var baseAddress = configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"];
+        //    var client = new HttpClient(handler)
+        //    {
+
+        //        BaseAddress = new Uri(baseAddress),
+        //        Timeout = TimeSpan.FromSeconds(30)
+        //    };
+
+
+        //    return client;
+
+        //}, FactoryLifetime.Singleton);
+
         App.Container.RegisterFactory<HttpClient>(c =>
         {
-
-            var handler = c.Resolve<AuthHeaderHandler>();
-
-            var baseAddress = configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"];
-            var client = new HttpClient(handler)
+            var stateService = c.Resolve<StateService>();
+            var authHandler = new AuthHeaderHandler(stateService);
+            var httpClientHandler = new HttpClientHandler
             {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
 
+            authHandler.InnerHandler = httpClientHandler;
+            var baseAddress = configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"];
+            var client = new HttpClient(authHandler)
+            {
                 BaseAddress = new Uri(baseAddress),
                 Timeout = TimeSpan.FromSeconds(30)
             };
 
-
             return client;
-
         }, FactoryLifetime.Singleton);
+
 
         App.Container.RegisterType<UserService>();
         App.Container.RegisterType<LoginService>();
@@ -118,7 +143,7 @@ public partial class App : Application
         App.Container.RegisterFactory<StateService>((_) => new StateService(), FactoryLifetime.Singleton);
         App.Container.RegisterFactory<IMessenger>((_) => new WeakReferenceMessenger(), FactoryLifetime.Singleton);
         App.Container.RegisterSingleton<SignalRService>();
-        App.Container.RegisterType<TokenClientService>();
+        App.Container.RegisterSingleton<TokenClientService>();
 
     }
 
@@ -180,18 +205,16 @@ public class AuthHeaderHandler : DelegatingHandler
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
 
-        // var token = await _tokenService.GetAccessTokenAsync(); // lub .GetAccessToken() jeśli synchroniczne
+        //if (!string.IsNullOrEmpty(_stateService.StateInfo.Token))
+        //{
+        //    var token = _stateService.StateInfo.Token;
+        //    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        //}
 
-        if (!string.IsNullOrEmpty(_stateService.StateInfo.Token))
-        {
-            var token = _stateService.StateInfo.Token;
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        }
-
-        if (!string.IsNullOrEmpty(_stateService.StateInfo.ClientSignalRID))
-        {
-            request.Headers.Add("SignalRId", _stateService.StateInfo.ClientSignalRID);
-        }
+        //if (!string.IsNullOrEmpty(_stateService.StateInfo.ClientSignalRID))
+        //{
+        //    request.Headers.Add("SignalRId", _stateService.StateInfo.ClientSignalRID);
+        //}
 
         request.Headers.Add("User-Agent", "BlazorServer");
 

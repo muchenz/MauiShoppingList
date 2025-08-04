@@ -60,7 +60,7 @@ namespace Test_MauiApp1.Services
             MessageAndStatusAndData<UserNameAndTokensResponse> message = null;
             try
             {
-                var response = await _httpClient.SendAsync(requestMessage);
+                var response = await _tokenHttpClient.SendAsync(requestMessage);
                 var data = await response.Content.ReadAsStringAsync();
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
@@ -110,7 +110,7 @@ namespace Test_MauiApp1.Services
                 });
 
 
-                var response = await _httpClient.SendAsync(requestMessage, cancellationToken: source.Token);
+                var response = await _tokenHttpClient.SendAsync(requestMessage, cancellationToken: source.Token);
 
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
@@ -332,7 +332,40 @@ namespace Test_MauiApp1.Services
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, "User/VerifyToken2");
 
-            var response = await _httpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> VerifyAcceessRefreshTokens(string accessToken, string refreshToken)
+        {
+            var veryfiRequest = new VerifyAccessRefreshTokenRequest
+            {
+                RefreshToken = refreshToken
+            };
+
+            var json = JsonConvert.SerializeObject(veryfiRequest);
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "User/VerifyAcceessRefreshTokens")
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+            requestMessage.Headers.Authorization
+                    = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", accessToken);
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await _httpClient.SendAsync(requestMessage);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
 
             if (response.IsSuccessStatusCode)
             {
