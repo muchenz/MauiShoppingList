@@ -91,7 +91,7 @@ public partial class App : Application
         App.Container.RegisterSingleton<TokenHttpClient>();
 
 
-        //App.Container.RegisterFactory<HttpClient>(c =>
+        //App.Container.RegisterFactory<HttpClient>(c => // some error when using AuthHeaderHandler : DelegatingHandler
         //{
         //    //HttpClientHandler handler = new HttpClientHandler();
         //    //handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
@@ -110,7 +110,7 @@ public partial class App : Application
         //    return client;
 
         //}, FactoryLifetime.Singleton);
-                
+
 
         App.Container.RegisterFactory<HttpClient>(c =>
         {
