@@ -144,7 +144,7 @@ namespace Test_MauiApp1.Services
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, "User/UserDataTree");
 
-            var response = await _tokenHttpClient.SendAsync(requestMessage);
+            using var response = await _tokenHttpClient.SendAsync(requestMessage);
 
             var data = await response.Content.ReadAsStringAsync();
 

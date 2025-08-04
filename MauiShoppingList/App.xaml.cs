@@ -91,43 +91,43 @@ public partial class App : Application
         App.Container.RegisterSingleton<TokenHttpClient>();
 
 
-        //App.Container.RegisterFactory<HttpClient>(c => // some error when using AuthHeaderHandler : DelegatingHandler
-        //{
-        //    //HttpClientHandler handler = new HttpClientHandler();
-        //    //handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
-
-        //    var handler = c.Resolve<AuthHeaderHandler>();
-
-        //    var baseAddress = configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"];
-        //    var client = new HttpClient(handler)
-        //    {
-
-        //        BaseAddress = new Uri(baseAddress),
-        //        Timeout = TimeSpan.FromSeconds(30)
-        //    };
-
-
-        //    return client;
-
-        //}, FactoryLifetime.Singleton);
-
-
-        App.Container.RegisterFactory<HttpClient>(c =>
+        App.Container.RegisterFactory<HttpClient>(c => // some error when using AuthHeaderHandler : DelegatingHandler
         {
-            var httpClientHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-            };
+            //HttpClientHandler handler = new HttpClientHandler();
+            //handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+            var handler = c.Resolve<AuthHeaderHandler>();
 
             var baseAddress = configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"];
-            var client = new HttpClient(httpClientHandler)
+            var client = new HttpClient(handler)
             {
+
                 BaseAddress = new Uri(baseAddress),
                 Timeout = TimeSpan.FromSeconds(30)
             };
 
+
             return client;
+
         }, FactoryLifetime.Singleton);
+
+
+        //App.Container.RegisterFactory<HttpClient>(c =>
+        //{
+        //    var httpClientHandler = new HttpClientHandler
+        //    {
+        //        ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+        //    };
+
+        //    var baseAddress = configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"];
+        //    var client = new HttpClient(httpClientHandler)
+        //    {
+        //        BaseAddress = new Uri(baseAddress),
+        //        Timeout = TimeSpan.FromSeconds(30)
+        //    };
+
+        //    return client;
+        //}, FactoryLifetime.Singleton);
 
 
         App.Container.RegisterType<UserService>();

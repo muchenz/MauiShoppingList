@@ -51,16 +51,17 @@ public class TokenHttpClient
 
         var signalRId = _stateService.StateInfo.ClientSignalRID;
 
-        request.Headers.Add("SignalRId", signalRId);
+       // request.Headers.Add("SignalRId", signalRId);
 
         var accessToken = _stateService.StateInfo.Token;
 
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+       // request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
         HttpResponseMessage response = null;
         try
-        {
-            response = await _httpClient.SendAsync(request);//, cancellationToken);
+        {                                          // HttpCompletionOption.ResponseHeadersRead without this android runtime throws exeption if 401 - strange 
+                                                    //this option read only headers then respond created, content later if nessesery
+            response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -78,7 +79,7 @@ public class TokenHttpClient
                 SetRequestAuthorizationLevelHeader(requestClone, (int)listAggregationId);
             }
 
-            response = await _httpClient.SendAsync(requestClone);//, cancellationToken);
+            response = await _httpClient.SendAsync(requestClone, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         }
 
         return response;
