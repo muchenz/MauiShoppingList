@@ -255,7 +255,7 @@ namespace Test_MauiApp1.Services
             //SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
 
 
-            var response = await _tokenHttpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage, listAggregationId);
 
             var responseStatusCode = response.StatusCode;
             if (responseStatusCode == HttpStatusCode.Forbidden)
