@@ -400,6 +400,9 @@ namespace Test_MauiApp1.ViewModels
                 LoadSaveOrderDataHelper.LoadListAggregatorsOrder(_stateService);
                 ListAggr = new ObservableCollection<ListAggregator>(data.ListAggregators);
                 _stateService.StateInfo.User.ListAggregators = ListAggr;
+
+                await SetInvitaionNewIndicator();
+
             }
             catch (Exception ex) 
             { 
@@ -435,7 +438,6 @@ namespace Test_MauiApp1.ViewModels
 
                 await SetSignalR();
 
-                await SetInvitaionNewIndicator();
 
             }
 
@@ -461,8 +463,7 @@ namespace Test_MauiApp1.ViewModels
         {
             var invList = await _userService.GetInvitationsListAsync();
 
-            if (invList.Count > 0)
-                InvitationsString = "NEW";
+            InvitationsString = invList.Count > 0 ? "NEW" : string.Empty;
 
         }
 

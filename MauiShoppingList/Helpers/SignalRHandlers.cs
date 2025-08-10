@@ -18,9 +18,10 @@ namespace Test_MauiApp1.Helpers
     public class SignalRHandlers
     {
 
-        public static async Task SignalRGetUserDataTreeAsync(IMessenger messenger)
+        public static Task SignalRGetUserDataTreeAsync(IMessenger messenger)
         {
             messenger.Send(new RequestForNewDataMessage());
+            return Task.CompletedTask;
         }
 
 
