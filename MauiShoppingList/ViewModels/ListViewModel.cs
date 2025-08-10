@@ -85,6 +85,8 @@ namespace Test_MauiApp1.ViewModels
                             
                             }
                         }
+                        SelectedItem = null;
+
                     };
                     _messenger.Send(new DisplayAlertMessage(message));
 
@@ -165,7 +167,7 @@ namespace Test_MauiApp1.ViewModels
                             _messenger.DontHavePermissionMessage();
 
                         }
-                        catch
+                        catch(Exception ex)
                         {
                         }
                         if (list != null)

@@ -183,10 +183,11 @@ namespace Test_MauiApp1.Services
             //await SetRequestBearerAuthorizationHeader(requestMessage);
             //SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
 
-            var response = await _tokenHttpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage, listAggregationId);
 
             var responseStatusCode = response.StatusCode;
-
+            if (responseStatusCode == HttpStatusCode.Forbidden)
+                throw new WebPermissionException(HttpStatusCode.Forbidden.ToString());
             var responseBody = await response.Content.ReadAsStringAsync();
 
             var returnedUser = JsonConvert.DeserializeObject<T>(responseBody);
@@ -220,7 +221,7 @@ namespace Test_MauiApp1.Services
             //SetRequestAuthorizationLevelHeader(requestMessage, listAggregationId);
 
 
-            var response = await _tokenHttpClient.SendAsync(requestMessage);
+            var response = await _tokenHttpClient.SendAsync(requestMessage, listAggregationId);
 
             var responseStatusCode = response.StatusCode;
 

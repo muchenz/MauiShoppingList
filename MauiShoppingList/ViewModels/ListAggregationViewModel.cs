@@ -117,6 +117,8 @@ namespace Test_MauiApp1.ViewModels
 
                             }
                         }
+                        SelectedItem = null;
+
                     };
                     _messenger.Send(new DisplayAlertMessage(message));
 
