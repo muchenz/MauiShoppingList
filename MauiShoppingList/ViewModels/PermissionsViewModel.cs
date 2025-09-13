@@ -12,6 +12,7 @@ using Test_MauiApp1.Services;
 using CommunityToolkit.Mvvm.Messaging;
 using Test_MauiApp1.ViewModels.Messages;
 using Test_MauiApp1.Helpers;
+using Test_MauiApp1.Models.Requests;
 
 namespace Test_MauiApp1.ViewModels
 {
@@ -107,7 +108,8 @@ namespace Test_MauiApp1.ViewModels
 
             try
             {
-                messageAndStatus = await _userService.InviteUserPermission(InvitationNew, listAggrId);
+                var invitation = new InviteUserRequest { Permission = InvitationNew.Permission, UserName = InvitationNew.Name };
+                messageAndStatus = await _userService.InviteUserPermission(invitation, listAggrId);
             }
             catch { }   
 
