@@ -38,8 +38,8 @@ namespace Test_MauiApp1.Services
             // var baseAddress = configuration.GetSection("AppSettings")["ShoppingWebAPIBaseAddress"];
             // _httpClient.BaseAddress = new Uri(baseAddress);
 
-            // //_httpClient.BaseAddress = new Uri("https://192.168.8.222:5003/api/");
-            //// _httpClient.BaseAddress = new Uri("https://94.251.148.187:5003/api/");
+            // //_httpClient.BaseAddress = new Uri("https://192.168.8.222:8003/api/");
+            //// _httpClient.BaseAddress = new Uri("https://94.251.148.187:8003/api/");
 
             // _httpClient.DefaultRequestHeaders.Add("User-Agent", "BlazorServer");
             //----------------------
