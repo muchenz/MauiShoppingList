@@ -79,6 +79,35 @@ namespace Test_MauiApp1.Services
             return message;
         }
 
+        public async Task<MessageAndStatusAndData<UserNameAndTokensResponse>> GetTokensFromId(string id)
+        {
+            var querry = new QueryBuilder();
+            querry.Add("id", id);
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, "User/GetTokensFromId" + await querry.GetQuerryUrlAsync());
+
+            MessageAndStatusAndData<UserNameAndTokensResponse> message = null;
+            try
+            {
+                var response = await _tokenHttpClient.SendAsync(requestMessage);
+                var data = await response.Content.ReadAsStringAsync();
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+
+                    var tokenData = JsonConvert.DeserializeObject<UserNameAndTokensResponse>(data);
+
+                    return MessageAndStatusAndData<UserNameAndTokensResponse>.Ok(tokenData);
+                }
+                message = MessageAndStatusAndData<UserNameAndTokensResponse>.Fail(
+                    JsonConvert.DeserializeObject<ProblemDetails>(data).Title);
+            }
+            catch
+            {
+                message = MessageAndStatusAndData<UserNameAndTokensResponse>.Fail("Connection problem.");
+            }
+            return message;
+        }
+
         public async Task<MessageAndStatusAndData<UserNameAndTokensResponse>> LoginAsync(string userName, string password)
         {
 
