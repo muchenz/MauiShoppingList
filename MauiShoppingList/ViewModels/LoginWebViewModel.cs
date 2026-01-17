@@ -31,9 +31,6 @@ namespace Test_MauiApp1.ViewModels
 
         }
 
-
-
-
         string _webUrl;
         private readonly UserService _userService;
         private readonly LoginService _loginService;
@@ -47,7 +44,8 @@ namespace Test_MauiApp1.ViewModels
             if (response.IsError == false)
             {
 
-                _loginService.LoginByTokenAsync(response.Data.UserName, response.Data.Token, response.Data.RefreshToken);
+                _loginService.SetCredentials(response.Data.UserName, response.Data.Token, response.Data.RefreshToken);
+
 
                 App.Current.MainPage = new NavigationPage(App.Container.Resolve<ListAggregationPage>())
                 {

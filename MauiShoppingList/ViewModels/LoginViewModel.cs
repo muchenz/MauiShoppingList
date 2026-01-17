@@ -13,6 +13,7 @@ using Test_MauiApp1.Services;
 using Test_MauiApp1.Views;
 using Test_MauiApp1.ViewModels;
 using Test_MauiApp1.Models.Response;
+using System.Diagnostics;
 
 namespace Test_MauiApp1.ViewModels
 {
@@ -128,7 +129,70 @@ namespace Test_MauiApp1.ViewModels
                 return new Command(async (list) => {
 
 
-                    await  Navigation.PushAsync(App.Container.Resolve<LoginWebPage>());
+                    //------------------------ use browser ------------------------------------------------
+
+                    string _gid = string.Empty;
+
+                    if (!Preferences.Default.ContainsKey("gid"))
+                    {
+                        _gid = Guid.NewGuid().ToString();
+                        Preferences.Default.Set("gid", _gid);
+                    }
+                    else
+                    {
+                        _gid = Preferences.Default.Get("gid", "");
+                    }
+
+
+                    string WebUrl = string.Format("https://www.facebook.com/v10.0/dialog/oauth?client_id={0}&response_type=code&redirect_uri={1}&state={2}&scope={3}",
+                     259675572518658,
+                        "https://192.168.0.222:5003/api/User",
+                     $"st=state123abc,ds=123456789, di={_gid}, returnUrl=fb259675572518658://authorize", "public_profile,email");
+                    
+                    Trace.WriteLine($"Facebook login id:!!!!!!!!!!!!!!!!!!!!!!!");
+
+
+                    var res = await WebAuthenticator.Default.AuthenticateAsync(
+                         new WebAuthenticatorOptions
+                         {   Url= new Uri(WebUrl),
+                             CallbackUrl= new Uri("fb259675572518658://authorize"),
+                             PrefersEphemeralWebBrowserSession = true
+                         });
+                
+
+                    var isId = res.Properties.TryGetValue("id", out string id);
+
+                    var response = await _userService.GetTokensFromId(id);
+
+                    if (response.IsError == false)
+                    {
+
+                        _loginService.SetCredentials(response.Data.UserName, response.Data.Token, response.Data.RefreshToken);
+
+                            App.Current.MainPage = new NavigationPage(App.Container.Resolve<ListAggregationPage>())
+                            {
+                                BarBackgroundColor = Colors.WhiteSmoke,
+                                BarTextColor = Colors.Black
+                            };
+                        
+                        //await Shell.Current.GoToAsync("//MainPage");
+                    }
+                    else
+                    {
+                        LoginError = response.Message;
+
+                    }
+
+
+                    Trace.WriteLine($"Facebook login id: {id}");
+
+
+
+
+                    //-------------------- use web view  ----------------------------------------------------
+
+
+                    //await Navigation.PushAsync(App.Container.Resolve<LoginWebPage>());
 
                 });
 
