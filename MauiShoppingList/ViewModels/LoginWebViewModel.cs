@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Microsoft.Maui;
+using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Test_MauiApp1.Services;
+using Test_MauiApp1.ViewModels;
+using Test_MauiApp1.Views;
 using Unity;
 using Unity.Resolution;
-using Microsoft.Maui;
-using Test_MauiApp1.Services;
-using Test_MauiApp1.Views;
-using Test_MauiApp1.ViewModels;
 
 namespace Test_MauiApp1.ViewModels
 {
@@ -22,11 +23,12 @@ namespace Test_MauiApp1.ViewModels
 
             WebUrl = "https://www.facebook.com/v10.0/dialog/oauth?client_id=259675572518658"
                     + "&response_type=token"
-                    + "&redirect_uri=https://192.168.0.222:8003/api/User/FacebookToken"
+                    + "&redirect_uri=https://192.168.0.222:5003/api/User/FacebookToken"
                     + $"&state=st=state123abc,ds=123456789,di={gid}&scope=public_profile,email";
 
             _userService = userService;
             _loginService = loginService;
+
         }
 
 
