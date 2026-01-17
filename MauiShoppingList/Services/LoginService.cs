@@ -92,13 +92,7 @@ public class LoginService
 
         if (response.IsSuccess)
         {
-            Preferences.Default.Set("UserName", response.Data.UserName);
-            Preferences.Default.Set("Token", response.Data.Token);
-            Preferences.Default.Set("RefreshToken", response.Data.RefreshToken);
-
-            _stateService.StateInfo.UserName = response.Data.UserName;
-            _stateService.StateInfo.Token = response.Data.Token;
-            _stateService.StateInfo.RefreshToken = response.Data.RefreshToken;
+            SetCredentials(response.Data.UserName, response.Data.Token, response.Data.RefreshToken);
         }
 
 
@@ -106,7 +100,7 @@ public class LoginService
 
     }
 
-    public void LoginByTokenAsync(string userName, string token, string refreshToken)
+    public void SetCredentials(string userName, string token, string refreshToken)
     {
         Preferences.Default.Set("UserName", userName);
         Preferences.Default.Set("Token", token);
@@ -114,7 +108,7 @@ public class LoginService
 
         _stateService.StateInfo.UserName = userName;
         _stateService.StateInfo.Token = token;
-        _stateService.StateInfo.Token = refreshToken;
+        _stateService.StateInfo.RefreshToken = refreshToken;
     }
 
 
