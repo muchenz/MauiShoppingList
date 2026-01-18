@@ -30,13 +30,13 @@ public partial class App : Application
         InitContainer();
         InitMessage();
         SetMainPage();
-        
-        
+
+
     }
 
     private void SetMainPage()
     {
-        
+
         MainPage = new NavigationPage(App.Container.Resolve<LoginPage>())
         {
             BarBackgroundColor = Colors.WhiteSmoke,
@@ -60,7 +60,7 @@ public partial class App : Application
             });
         });
     }
-    
+
 
     private void InitContainer()
     {
@@ -178,12 +178,33 @@ public partial class App : Application
     {
     }
 
-    protected override void OnSleep()
+    protected override async void OnSleep()
     {
+        var signalR = Container.Resolve<SignalRService>();
+        var stateService = Container.Resolve<StateService>();
+
+        if (!string.IsNullOrEmpty(stateService.StateInfo.ClientSignalRID))
+        {
+            await signalR?.OnlyStop();
+        }
     }
 
-    protected override void OnResume()
+    protected override async void OnResume()
     {
+        var signalR = Container.Resolve<SignalRService>();
+        var messager = Container.Resolve<IMessenger>();
+        var stateService = Container.Resolve<StateService>();
+
+        if (!string.IsNullOrEmpty(stateService.StateInfo.Token))
+        {
+            messager?.Send(new RequestForNewDataMessage());
+        }
+
+        if (!string.IsNullOrEmpty(stateService.StateInfo.ClientSignalRID))
+        {
+            await signalR?.OnlyStart();
+        }
+
     }
 }
 public class AuthHeaderHandler : DelegatingHandler

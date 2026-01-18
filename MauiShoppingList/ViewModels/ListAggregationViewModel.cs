@@ -87,14 +87,12 @@ namespace Test_MauiApp1.ViewModels
 
         protected override Task OnAppearingAsync()
         {
-            _androidBackHandler.DisableMinimizeOnBack();
-
+            _androidBackHandler.EnableMinimizeOnBack();
             return base.OnAppearingAsync();
         }
         protected override Task OnDisappearingAsync()
         {
             _androidBackHandler.DisableMinimizeOnBack();
-
             return base.OnDisappearingAsync();
         }
         int iDItemToDelete;

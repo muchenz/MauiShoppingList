@@ -23,6 +23,15 @@ public class SignalRService
     private readonly StateService _stateService;
     private readonly TokenClientService _tokenClientService;
 
+    public Task OnlyStop()
+    {
+        return _hubConnection?.StopAsync();
+    }
+    public Task OnlyStart()
+    {
+        return _hubConnection?.StartAsync();
+    }
+
     public async Task StartConnectionAsync()
     {
         if (string.IsNullOrEmpty(_stateService.StateInfo.Token))
@@ -37,7 +46,7 @@ public class SignalRService
             //opts.Headers.Add("Access_Token", _stateService.StateInfo.Token);
 
             opts.AccessTokenProvider = async () =>
-            {               
+            {
                 await _tokenClientService.CheckAndSetNewTokens();
 
                 return _stateService.StateInfo.Token;
@@ -53,10 +62,11 @@ public class SignalRService
             };
         }).WithAutomaticReconnect().Build();
 
-        _stateService.StateInfo.ClientSignalRID = _hubConnection.ConnectionId;
 
-       await _hubConnection.StartAsync();
+        await _hubConnection.StartAsync();
+        _stateService.StateInfo.ClientSignalRID = _hubConnection.ConnectionId;
         await CallHuBReadyAsync();
+
 
         _hubConnection.Reconnected += (connectionId) =>
         {
