@@ -40,4 +40,18 @@ public partial class ListAggregationPage : ContentPage
 
 
     }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        ((ListAggregationViewModel)BindingContext).OnAppearingAsyncCommand.Execute(null);
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        ((ListAggregationViewModel)BindingContext).OnDisappearingAsyncCommand.Execute(null);
+    }
 }

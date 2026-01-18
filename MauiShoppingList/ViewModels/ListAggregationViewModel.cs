@@ -34,6 +34,7 @@ namespace Test_MauiApp1.ViewModels
         private readonly IMessenger _messenger;
         private readonly SignalRService _signalRService;
         private readonly LoginService _loginService;
+        private readonly IAndroidBackHandler _androidBackHandler;
         string _userName;
         ListAggregator _selectedItem;
         public ListAggregator SelectedItem { get { return _selectedItem; } set { SetProperty(ref _selectedItem, value); } }
@@ -54,6 +55,9 @@ namespace Test_MauiApp1.ViewModels
         public ListAggregationViewModel(UserService userService, ListItemService listItemService, IConfiguration configuration,
             StateService stateService, IMessenger messenger, SignalRService signalRService, LoginService loginService)
         {
+#if ANDROID
+           _androidBackHandler=  App.Container.Resolve<IAndroidBackHandler>();
+#endif
             _userName = stateService.StateInfo.UserName;
             _userService = userService;
             _listItemService = listItemService;
@@ -81,6 +85,18 @@ namespace Test_MauiApp1.ViewModels
             
         }
 
+        protected override Task OnAppearingAsync()
+        {
+            _androidBackHandler.DisableMinimizeOnBack();
+
+            return base.OnAppearingAsync();
+        }
+        protected override Task OnDisappearingAsync()
+        {
+            _androidBackHandler.DisableMinimizeOnBack();
+
+            return base.OnDisappearingAsync();
+        }
         int iDItemToDelete;
         string nameItemToDelete;
 
