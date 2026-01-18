@@ -7,6 +7,28 @@ namespace Test_MauiApp1;
 [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
 public class MainActivity : MauiAppCompatActivity
 {
+    static bool _minimizeOnBack;
+
+    public static void EnableMinimizeOnBack()
+    {
+        _minimizeOnBack = true;
+    }
+    public static void DisableMinimizeOnBack()
+    {
+        _minimizeOnBack = false;
+    }
+    public override void OnBackPressed()
+    {
+        if (_minimizeOnBack)
+        {
+            MoveTaskToBack(true); // minimalization
+            //Finish();
+        }
+        else
+        {
+            base.OnBackPressed();
+        }
+    }
 }
 
 

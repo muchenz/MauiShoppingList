@@ -89,7 +89,9 @@ public partial class App : Application
 
         App.Container.RegisterType<AuthHeaderHandler>();
         App.Container.RegisterSingleton<TokenHttpClient>();
-
+#if ANDROID
+        App.Container.RegisterSingleton<IAndroidBackHandler, AndroidBackHandler>();
+#endif
 
         App.Container.RegisterFactory<HttpClient>(c => // some error when using AuthHeaderHandler : DelegatingHandler (setting HttpCompletionOption.ResponseHeadersRead helps)
         {
