@@ -29,3 +29,27 @@ namespace Test_MauiApp1.Services
 
 
 }
+
+public class GidService : IGidService
+{
+
+
+
+    public string GetGid()
+    {
+        string _gid = string.Empty;
+
+        if (!Preferences.Default.ContainsKey("gid"))
+        {
+            _gid = Guid.NewGuid().ToString();
+            Preferences.Default.Set("gid", _gid);
+        }
+        else
+        {
+            _gid = Preferences.Default.Get("gid", "");
+        }
+
+        return _gid;
+    }
+
+}

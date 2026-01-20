@@ -137,23 +137,13 @@ namespace Test_MauiApp1.ViewModels
                     {
                         //------------------------ use browser ------------------------------------------------
 
-                        string _gid = string.Empty;
-
-                        if (!Preferences.Default.ContainsKey("gid"))
-                        {
-                            _gid = Guid.NewGuid().ToString();
-                            Preferences.Default.Set("gid", _gid);
-                        }
-                        else
-                        {
-                            _gid = Preferences.Default.Get("gid", "");
-                        }
+                        string gid = _stateService.StateInfo.Gid;
 
 
                         string WebUrl = string.Format("https://www.facebook.com/v10.0/dialog/oauth?client_id={0}&response_type=code&redirect_uri={1}&state={2}&scope={3}",
                          259675572518658,
                             "https://192.168.0.222:5003/api/User",
-                         $"st=state123abc,ds=123456789, di={_gid}, returnUrl=fb259675572518658://authorize", "public_profile,email");
+                         $"st=state123abc,ds=123456789, di={gid}, returnUrl=fb259675572518658://authorize", "public_profile,email");
 
                         Trace.WriteLine($"Facebook login id:!!!!!!!!!!!!!!!!!!!!!!!");
 
