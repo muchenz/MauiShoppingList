@@ -13,21 +13,13 @@ public class LoginService
 {
     private readonly StateService _stateService;
     private readonly IUnityContainer _container;
-    private string _gid = string.Empty;
+    private string gid = string.Empty;
 
     public LoginService(StateService stateService, IUnityContainer container)
     {
         _stateService = stateService;
         _container = container;
-        if (!Preferences.Default.ContainsKey("gid"))
-        {
-            _gid = Guid.NewGuid().ToString();
-            Preferences.Default.Set("gid", _gid);
-        }
-        else
-        {
-            _gid = Preferences.Default.Get("gid", "");
-        }
+       gid = _stateService.StateInfo.Gid;   
 
     }
 

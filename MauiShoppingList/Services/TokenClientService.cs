@@ -44,7 +44,7 @@ public class TokenClientService
         requestMessage.Headers.Authorization
                     = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", accessToken);
         requestMessage.Headers.Add("refresh_token", refreshToken);
-        requestMessage.Headers.Add("deviceid", Preferences.Default.Get("gid", ""));
+        requestMessage.Headers.Add("deviceid", _stateService.StateInfo.Gid);
         
         HttpResponseMessage response = null;
             response = await _httpClient.SendAsync(requestMessage);

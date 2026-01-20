@@ -9,13 +9,25 @@ namespace Test_MauiApp1.Services
 {
     public class StateService
     {
-        public  StateInfo StateInfo { get;  } = new StateInfo();
+        private readonly IGidService _gidService;
 
+        public StateService(IGidService gidService)
+        {
+            _gidService = gidService;
+            StateInfo=new StateInfo(_gidService);
+        }
+        public  StateInfo StateInfo { get;  } 
     }
 
 
     public class StateInfo
     {
+        private readonly IGidService _gidService;
+
+        public StateInfo(IGidService gidService)
+        {
+            _gidService = gidService;
+        }
         bool IsAuthenticated { get; set; }
         public string Token { get; set; }
         public string RefreshToken { get; set; }
@@ -24,6 +36,7 @@ namespace Test_MauiApp1.Services
 
         public  string UserName { get; set; }
         public  User User { get; set; }
+        public string Gid => _gidService.GetGid();
 
     }
 
@@ -32,7 +45,6 @@ namespace Test_MauiApp1.Services
 
 public class GidService : IGidService
 {
-
 
 
     public string GetGid()

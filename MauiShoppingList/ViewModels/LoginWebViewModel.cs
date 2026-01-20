@@ -16,9 +16,9 @@ namespace Test_MauiApp1.ViewModels
     {
 
         string facbookUrl = "";
-        public LoginWebViewModel(UserService userService, LoginService loginService)
+        public LoginWebViewModel(UserService userService, LoginService loginService, StateService stateService)
         {
-            var gid = Preferences.Default.Get("gid", "");
+            var gid = stateService.StateInfo.Gid;
 
 
             WebUrl = "https://www.facebook.com/v10.0/dialog/oauth?client_id=259675572518658"
@@ -28,12 +28,13 @@ namespace Test_MauiApp1.ViewModels
 
             _userService = userService;
             _loginService = loginService;
-
+            _stateService = stateService;
         }
 
         string _webUrl;
         private readonly UserService _userService;
         private readonly LoginService _loginService;
+        private readonly StateService _stateService;
 
         public string WebUrl { get { return _webUrl; } set { SetProperty(ref _webUrl, value); } }
 

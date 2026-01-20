@@ -140,10 +140,11 @@ public partial class App : Application
         //App.Container.RegisterSingleton<IConfiguration, Helpers.Configuration.Configuration>();
 
         //var stateService = new StateService();
-        App.Container.RegisterFactory<StateService>((_) => new StateService(), FactoryLifetime.Singleton);
+        App.Container.RegisterFactory<StateService>((c) => new StateService(c.Resolve<IGidService>()), FactoryLifetime.Singleton);
         App.Container.RegisterFactory<IMessenger>((_) => new WeakReferenceMessenger(), FactoryLifetime.Singleton);
         App.Container.RegisterSingleton<SignalRService>();
         App.Container.RegisterSingleton<TokenClientService>();
+        App.Container.RegisterSingleton<IGidService, GidService>();
 
     }
 

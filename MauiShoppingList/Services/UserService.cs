@@ -111,7 +111,7 @@ namespace Test_MauiApp1.Services
         public async Task<MessageAndStatusAndData<UserNameAndTokensResponse>> LoginAsync(string userName, string password)
         {
 
-            var gid = Preferences.Default.Get("gid", "");
+            var gid = _stateService.StateInfo.Gid;
 
             var loginRequest = new LoginRequest
             {
@@ -184,7 +184,7 @@ namespace Test_MauiApp1.Services
 
         public async Task<MessageAndStatusAndData<string>> RegisterAsync(RegistrationModel model)
         {
-            var gid = Preferences.Default.Get("gid", "");
+            var gid = _stateService.StateInfo.Gid;
 
             var loginRequest = new RegistrationRequest
             {
